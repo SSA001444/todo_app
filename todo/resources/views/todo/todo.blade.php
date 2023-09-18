@@ -42,6 +42,19 @@
     </form>
 </div>
 
+<script>
+    $(document).ready(function () {
+
+        $('.delete-button').click(function () {
+            var todoId = $(this).data('todo-id');
+
+            if (confirm('Are you sure you want delete this todo?')) {
+                window.location.href = '/todos/' + todoId;
+            }
+        });
+    });
+</script>
+
 <div class="text-center">
     <h2>All Todos</h2>
     <div class="row justify-content-center">
@@ -79,7 +92,7 @@
                         </td>
                         <td>
                             <a href="{{route('todos.edit',['todo'=>$todo->id])}}" class="btn btn-info">Edit</a>
-                            <a href="{{route('todos.destroy',['todo'=>$todo->id])}}" class="btn btn-danger">Delete</a>
+                            <button class="btn btn-danger delete-button" data-todo-id="{{ $todo->id }}">Delete</button>
                             <a href="{{route('todo.share',['todo'=>$todo->id])}}" class="btn btn-info">Share</a>
                         </td>
                         <th>{{$todo->shared_from}}</th>
