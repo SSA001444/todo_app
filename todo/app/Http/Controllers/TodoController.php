@@ -118,10 +118,14 @@ class TodoController extends Controller
 
         $recipientEmail = $request->input('email');
         $recipientUser = User::where('email', $recipientEmail) ->first();
-
         if(!$recipientUser)
         {
             return back()->withErrors('User with this email does not found!');
+        }
+        if($recipientUser == auth()->user())
+        {
+            return back()->withErrors('You cannot share a todo with yourself!');
+
         }
         Todo::create([
             'title'=>$todo->title,
