@@ -101,7 +101,10 @@ class TodoController extends Controller
      */
     public function destroy(string $id)
     {
-        Todo::where('id', $id)->delete();
+        $todo =Todo::findOrFail($id);
+        $todo->group_id = null;
+        $todo->save();
+        $todo->delete();
         return redirect()->route('todos.index')->with('success', 'Deleted Todo');
     }
 

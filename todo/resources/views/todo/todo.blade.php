@@ -43,16 +43,17 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-        $('.delete-button').click(function () {
-            var todoId = $(this).data('todo-id');
+            $('.delete-button').click(function () {
+                var todoId = $(this).data('todo-id');
 
-            if (confirm('Are you sure you want delete this todo?')) {
-                window.location.href = '/todos/' + todoId;
-            }
+                if (confirm('Are you sure you want delete this todo?')) {
+                    window.location.href = '/todos/' + todoId;
+                }
+            });
         });
-    });
+
 </script>
 
 <div class="text-center">
