@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Todo extends Model
 {
-    use HasFactory;
-    use softDeletes;
+    use HasFactory, softDeletes;
+
     protected $guarded=[];
 
     public function group()
@@ -21,6 +21,4 @@ class Todo extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-
 }

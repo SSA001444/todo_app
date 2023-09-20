@@ -1,32 +1,31 @@
 @extends('auth.layouts')
+
 @section('content')
-<div class="row justify-content-center mt-5">
-    <div class="col-lg-6">
-        @if(session()->has('success'))
-            <div class="alert alert-success">
-                {{ session()->get('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">
-                    {{$error}}
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-6">
+            @if (session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session()->get('success') }}
                 </div>
-            @endforeach
-        @endif
+            @endif
+
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            @endif
+        </div>
     </div>
-</div>
-<?php
-?>
-<div class="text-center mt-5">
-    <h2>Edit Group</h2>
-</div>
 
-    <form method="POST" action="{{route('groups.update',['group'=>$group->id])}}">
+    <div class="text-center mt-5">
+        <h2>Edit Group</h2>
+    </div>
+
+    <form method="POST" action="{{ route('groups.update',['group' => $group->id]) }}">
         @csrf
-
-        {{method_field('PUT')}}
+        {{ method_field('PUT') }}
 
         <div class="row justify-content-center mt-5">
             <div class="col-lg-6">
@@ -38,8 +37,6 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
-
         </div>
-
     </form>
 @endsection

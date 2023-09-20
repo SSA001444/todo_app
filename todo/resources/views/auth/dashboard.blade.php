@@ -1,7 +1,6 @@
 @extends('auth.layouts')
 
 @section('content')
-
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
             <div class="card">
@@ -13,8 +12,8 @@
                         </div>
                         <script>
                             setTimeout(function () {
-                                window.location.href = "{{route('todos.index')}}";
-                            },2000);
+                                window.location.href = "{{ route('todos.index') }}";
+                            }, 2000);
                         </script>
                     @else
                         <div class="alert alert-success">
@@ -22,13 +21,12 @@
                         </div>
                         <script>
                             setTimeout(function () {
-                                window.location.href = "{{route('todos.index')}}";
-                            },2000);
+                                window.location.href = "{{ route('todos.index') }}";
+                            }, 2000);
                         </script>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
