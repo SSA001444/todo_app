@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('password');
             $table->timestamps();
         });
-    }
+     }
 
     public function down(): void
     {

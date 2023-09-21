@@ -229,6 +229,7 @@
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/todo/vendor/laravel/ui" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

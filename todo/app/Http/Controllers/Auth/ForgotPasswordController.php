@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use DB;
+use Mail;
 use Hash;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

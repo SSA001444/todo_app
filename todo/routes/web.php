@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +21,8 @@ Route::controller(\App\Http\Controllers\Auth\LoginRegisterController::class)->gr
     Route::post('/store', 'store')->name('store');
     Route::get('/login', 'login')->name('login');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::get('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', 'dashboard')->name('dashboard')->middleware('auth', 'is_verify_email');
+    Route::get('account/verify/{token}', 'verifyAccount')->name('user.verify');
     Route::get('/logout', 'logout')->name('logout');
 });
 

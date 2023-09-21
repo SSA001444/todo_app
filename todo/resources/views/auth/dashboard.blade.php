@@ -8,7 +8,7 @@
                 <div class="card-body">
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">
-                            {{$message}}
+                            {{ $message }}
                         </div>
                         <script>
                             setTimeout(function () {

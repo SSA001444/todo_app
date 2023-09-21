@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\UserVerify;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
+use Mail;
+
 
 class LoginRegisterController extends Controller
 {
@@ -28,20 +33,47 @@ class LoginRegisterController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        User::create([
+        $createUser = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        $credentials = $request->only('username', 'password');
+        $token = Str::random(40);
 
-        Auth::attempt($credentials);
+        UserVerify::create([
+           'user_id' => $createUser->id,
+           'token' => $token,
+        ]);
 
-        $request->session()->regenerate();
+        Mail::send('email.verificationEmail', ['token' => $token], function($message) use($request) {
+           $message->to($request->email);
+           $message->subject('Email Verification Mail');
+        });
 
-        return redirect()->route('dashboard')
-            ->withSuccess('You have successfully registered & logged in!');
+        return redirect()->route('login')->with('success', 'We send email verification on your email');
+
+    }
+
+    public function verifyAccount($token)
+    {
+        $verifyUser = UserVerify::where('token', $token)->first();
+
+        $message = 'Sorry your email cannot be identified.';
+
+        if (!is_null($verifyUser) ){
+            $user = $verifyUser->user;
+
+            if (!$user->is_email_verified) {
+                $verifyUser->user->is_email_verified = 1;
+                $verifyUser->user->save();
+                $message = "Your e-mail is verified. You can now login.";
+            } else {
+                $message = "Your e-mail is already verified. You can now login.";
+            }
+        }
+
+        return redirect()->route('login')->with('success', $message);
     }
 
     public function login()
@@ -51,20 +83,25 @@ class LoginRegisterController extends Controller
 
     public function authenticate(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('dashboard')
-                ->withSuccess('You have successfully logged in!');
-        }
+        $credentials = $request->only('email', 'password');
 
-        return back()->withErrors([
-            'email' => 'Your provided credentials do not match in our records.',
-        ])->onlyInput('email');
+        if (Auth::attempt($credentials)) {
+            if (Auth::user()->is_email_verified) {
+                $request->session()->regenerate();
+                return redirect()->route('dashboard')
+                    ->withSuccess('You have successfully logged in!');
+            } else {
+                Auth::logout();
+                return redirect()->route('login')->withErrors(['email' => 'Your email is not verified. Please verify your email.']);
+            }
+        } else {
+            return redirect()->route('login')->withErrors([ 'email' => 'Invalid credentials. Please try again.']);
+        }
 
 
     }
@@ -75,10 +112,7 @@ class LoginRegisterController extends Controller
             return view('auth.dashboard');
         }
 
-        return redirect()->route('login')
-            ->withErrors([
-                'username' => 'Please login to access the dashboard.',
-            ])->onlyInput('username');
+        return redirect("login")->withSuccess('Opps! You do not have access');
     }
 
     public function logout(Request $request)
@@ -89,7 +123,7 @@ class LoginRegisterController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')
-            ->withSuccess('You have logged out successfully!');;
+            ->withSuccess('You have logged out successfully!');
     }
 
 }
