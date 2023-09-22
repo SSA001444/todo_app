@@ -35,7 +35,7 @@ class TodoController extends Controller
         Todo::create([
             'title' => $request->get('title'),
             'group_id' => $request->get('group_id'),
-            'commentary'=>$request->get('commentary'),
+            'commentary' => $request->get('commentary'),
             'user_id' => auth()->id(),
         ]);
 
@@ -48,7 +48,6 @@ class TodoController extends Controller
 
         return view('todo.editTodo', compact('todo'));
     }
-
 
     public function update(Request $request, string $id)
     {
@@ -70,12 +69,11 @@ class TodoController extends Controller
         return redirect()->route('todos.index')->with('success', 'Updated Todo');
     }
 
-
     public function destroy(string $id)
     {
         $todo = Todo::find($id);
 
-        if(!$todo){
+        if (!$todo) {
             return redirect()->route('todos.index')->with('error', 'Todo not found');
         }
 
@@ -106,7 +104,6 @@ class TodoController extends Controller
 
         if ($recipientUser == auth()->user()) {
             return back()->withErrors('You cannot share a todo with yourself!');
-
         }
 
         Todo::create([
@@ -123,5 +120,4 @@ class TodoController extends Controller
 
         return redirect()->route('todos.index')->with('success', 'Todo is shared');
     }
-
 }

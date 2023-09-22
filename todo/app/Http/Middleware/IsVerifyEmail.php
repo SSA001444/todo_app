@@ -12,6 +12,7 @@ class IsVerifyEmail
     {
         if (!Auth::user()->is_email_verified) {
             auth()->logout();
+
             return redirect()->route('login')->withErrors([ 'email' => 'You need to confirm your account.']);
         }
 

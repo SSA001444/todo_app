@@ -61,7 +61,7 @@ class LoginRegisterController extends Controller
 
         $message = 'Sorry your email cannot be identified.';
 
-        if (!is_null($verifyUser) ){
+        if (!is_null($verifyUser)) {
             $user = $verifyUser->user;
 
             if (!$user->is_email_verified) {
@@ -97,13 +97,12 @@ class LoginRegisterController extends Controller
                     ->withSuccess('You have successfully logged in!');
             } else {
                 Auth::logout();
+
                 return redirect()->route('login')->withErrors(['email' => 'Your email is not verified. Please verify your email.']);
             }
         } else {
             return redirect()->route('login')->withErrors([ 'email' => 'Invalid credentials. Please try again.']);
         }
-
-
     }
 
     public function dashboard()
@@ -125,5 +124,4 @@ class LoginRegisterController extends Controller
         return redirect()->route('login')
             ->withSuccess('You have logged out successfully!');
     }
-
 }
