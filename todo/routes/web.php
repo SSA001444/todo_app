@@ -36,7 +36,8 @@ Route::controller(\App\Http\Controllers\Auth\ForgotPasswordController::class)->g
 Route::middleware(['auth'])->group(function () {
     Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
         Route::resource('todos', \App\Http\Controllers\TodoController::class);
-        Route::get('todos/{todo}', 'destroy')->name('todos.destroy');
+        Route::put('todos/edit/{todo}', 'update')->name('todos.update');
+        Route::get('todos/delete/{todo}', 'destroy')->name('todos.destroy');
         Route::get('share-todo/{todo}', 'shareForm')->name('todo.share.form');
         Route::post('share-todo/{todo}', 'share')->name('todo.share');
         Route::get('/add-todo/{token}', 'add')->name('todo.add');

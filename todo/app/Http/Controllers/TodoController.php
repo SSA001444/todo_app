@@ -105,6 +105,7 @@ class TodoController extends Controller
         if ($recipientUser == auth()->user()) {
             return back()->withErrors('You cannot share a todo with yourself!');
         }
+        $sharedFrom = User::where('id', $todo->user_id)->first();
 
         Todo::create([
             'title' => $todo->title,
@@ -112,7 +113,7 @@ class TodoController extends Controller
             'group_id' => $todo->group_id,
             'commentary' => $todo->commentary,
             'user_id' => $recipientUser->id,
-            'shared_from' => User::where('id', $todo->user_id)->first()->email,
+            'shared_from' => $sharedFrom->email,
         ]);
 
         $shareTodo = new ShareTodo($todo);

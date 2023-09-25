@@ -50,11 +50,10 @@
                 var todoId = $(this).data('todo-id');
 
                 if (confirm('Are you sure you want to delete this todo?')) {
-                    window.location.href = '/todos/' + todoId;
+                    window.location.href = '/todos/delete/' + todoId;
                 }
             });
         });
-
     </script>
 
     <div class="text-center">
