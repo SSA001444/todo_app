@@ -84,11 +84,18 @@ class LoginRegisterController extends Controller
     public function authenticate(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'identity' => 'required',
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $identity = $request->input('identity');
+        $password = $request->input('password');
+
+        if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
+            $credentials = ['email' => $identity, 'password' => $password];
+        } else {
+            $credentials = ['username' => $identity, 'password' => $password];
+        }
 
         if (Auth::attempt($credentials)) {
             if (Auth::user()->is_email_verified) {
@@ -98,10 +105,10 @@ class LoginRegisterController extends Controller
             } else {
                 Auth::logout();
 
-                return redirect()->route('login')->withErrors(['email' => 'Your email is not verified. Please verify your email.']);
+                return redirect()->route('login')->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
             }
         } else {
-            return redirect()->route('login')->withErrors([ 'email' => 'Invalid credentials. Please try again.']);
+            return redirect()->route('login')->withErrors([ 'identity' => 'Invalid credentials. Please try again.']);
         }
     }
 
