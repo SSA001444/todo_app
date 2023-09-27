@@ -41,11 +41,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('share-todo/{todo}', 'shareForm')->name('todo.share.form');
         Route::post('share-todo/{todo}', 'share')->name('todo.share');
         Route::get('/add-todo/{token}', 'add')->name('todo.add');
+        Route::post('todos/reorder', 'reorder')->name('todos.reorder');
     });
 
     Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
         Route::resource('groups', \App\Http\Controllers\GroupController::class);
         Route::get('/groups', 'index')->name('groups.index');
         Route::get('groups/{group}', 'destroy')->name('groups.destroy');
+        Route::post('todos/reorder', 'reorder')->name('groups.reorder');
     });
 });

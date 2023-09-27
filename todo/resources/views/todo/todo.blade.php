@@ -55,12 +55,40 @@
             });
         });
     </script>
+    {{--Script to drop-down todos--}}
+    <script>
+        $(document).ready(function () {
+            $("#sortable-table tbody").sortable({
+                axis: "y",
+                update: function (event, ui) {
+                    var todoIds = $("#sortable-table tbody tr").map(function () {
+                        return $(this).data("todo-id");
+                    }).get();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('todos.reorder') }}",
+                        data: {
+                            todoIds: todoIds
+                        },
+                        success: function (data) {
+                            console.log("Order updated successfully.");
+                        },
+                        error: function (error) {
+                            console.log("Error updating order: " + error);
+                        }
+                    });
+                }
+            });
+            $("#sortable-table tbody").disableSelection();
+        });
+    </script>
 
     <div class="text-center">
         <h2>All Todos</h2>
         <div class="row justify-content-center">
             <div class="col-lg-6">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="sortable-table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>

@@ -11,6 +11,7 @@ class GroupController extends Controller
 
     public function index()
     {
+        // Passing variable to the view for database relationship
         $groups = Group::where('user_id', auth()->id())->get();
         return view('todo.createGroup', compact('groups'));
 
@@ -36,6 +37,7 @@ class GroupController extends Controller
 
     public function edit(string $id)
     {
+        // Passing variable to the edit view to display available groups to the user
         $group = Group::where('id', $id)->where('user_id', auth()->id())->first();
         return view('todo.editGroup', compact('group'));
     }
@@ -64,7 +66,7 @@ class GroupController extends Controller
         if (!$group) {
             return redirect()->route('groups.index')->with('error', 'Group not found');
         }
-
+        // Find all groups connection to todos and setting group_id to null to prevent database error
         $group->todo()->update(['group_id' => null]);
         $group->delete();
 

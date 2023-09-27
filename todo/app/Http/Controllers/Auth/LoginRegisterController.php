@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use Mail;
 
@@ -27,6 +26,7 @@ class LoginRegisterController extends Controller
 
     public function store(Request $request)
     {
+        // Attribute requirements and validation
         $request->validate([
             'username' => 'required|string|max:60|unique:users',
             'email' => 'required|email|max:255|unique:users',
@@ -38,14 +38,14 @@ class LoginRegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        // Create token for email verification
         $token = Str::random(40);
 
         UserVerify::create([
            'user_id' => $createUser->id,
            'token' => $token,
         ]);
-
+        // Email sending site for verification
         Mail::send('email.verificationEmail', ['token' => $token], function($message) use($request) {
            $message->to($request->email);
            $message->subject('Email Verification Mail');
@@ -60,7 +60,7 @@ class LoginRegisterController extends Controller
         $verifyUser = UserVerify::where('token', $token)->first();
 
         $message = 'Sorry your email cannot be identified.';
-
+        // If email not verified - verification
         if (!is_null($verifyUser)) {
             $user = $verifyUser->user;
 
@@ -90,13 +90,13 @@ class LoginRegisterController extends Controller
 
         $identity = $request->input('identity');
         $password = $request->input('password');
-
+        // Filter for credentials, email or username
         if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
             $credentials = ['email' => $identity, 'password' => $password];
         } else {
             $credentials = ['username' => $identity, 'password' => $password];
         }
-
+        // If email is verified - authorization
         if (Auth::attempt($credentials)) {
             if (Auth::user()->is_email_verified) {
                 $request->session()->regenerate();

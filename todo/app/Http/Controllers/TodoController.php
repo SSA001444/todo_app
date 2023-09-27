@@ -16,6 +16,7 @@ class TodoController extends Controller
 
     public function index()
     {
+        // Passing variable to the edit view to display available todos and groups to the user
         $todos = Todo::where('user_id', auth()->id())->get();
         $groups = Group::where('user_id', auth()->id())->get();
 
@@ -76,7 +77,7 @@ class TodoController extends Controller
         if (!$todo) {
             return redirect()->route('todos.index')->with('error', 'Todo not found');
         }
-
+        // Setting group_id to null to prevent database relationship error
         $todo->group_id = null;
         $todo->save();
         $todo->delete();
@@ -94,7 +95,7 @@ class TodoController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
-
+        // Setting email recipient and user
         $recipientEmail = $request->input('email');
         $recipientUser = User::where('email', $recipientEmail)->first();
 
@@ -105,8 +106,9 @@ class TodoController extends Controller
         if ($recipientUser == auth()->user()) {
             return back()->withErrors('You cannot share a todo with yourself!');
         }
-        $sharedFrom = User::where('id', $todo->user_id)->first();
 
+        $sharedFrom = User::where('id', $todo->user_id)->first();
+        // Creation task in recipient user account
         Todo::create([
             'title' => $todo->title,
             'is_completed' => $todo->is_completed,
@@ -115,10 +117,17 @@ class TodoController extends Controller
             'user_id' => $recipientUser->id,
             'shared_from' => $sharedFrom->email,
         ]);
-
+        // Sending mail notification
         $shareTodo = new ShareTodo($todo);
         Mail::to($recipientEmail)->send($shareTodo);
 
         return redirect()->route('todos.index')->with('success', 'Todo is shared');
+    }
+
+    public function reorder(Request $request)
+    {
+        $todoIds = $request->input('todoIds');
+
+        return response()->json(['message' => 'Order updated successfully']);
     }
 }
