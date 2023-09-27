@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -129,5 +130,25 @@ class TodoController extends Controller
         $todoIds = $request->input('todoIds');
 
         return response()->json(['message' => 'Order updated successfully']);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+        $todoId = $request->input('todo_id');
+        $isChecked = $request->input('is_checked');
+
+        $todo = Todo::find($todoId);
+
+        if ($todo) {
+            $todo->is_completed = $isChecked === 'true' ? true : false;
+            $todo->save();
+        }
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+            Log::error('Error updating status: ' . $e->getMessage());
+            return response()->json(['error' => 'Error Updating Status'], 500);
+        }
     }
 }

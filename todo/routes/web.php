@@ -42,12 +42,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('share-todo/{todo}', 'share')->name('todo.share');
         Route::get('/add-todo/{token}', 'add')->name('todo.add');
         Route::post('todos/reorder', 'reorder')->name('todos.reorder');
+        Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
     });
 
     Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
         Route::resource('groups', \App\Http\Controllers\GroupController::class);
         Route::get('/groups', 'index')->name('groups.index');
         Route::get('groups/{group}', 'destroy')->name('groups.destroy');
-        Route::post('todos/reorder', 'reorder')->name('groups.reorder');
+        Route::post('groups/reorder', 'reorder')->name('groups.reorder');
     });
 });

@@ -83,6 +83,37 @@
             $("#sortable-table tbody").disableSelection();
         });
     </script>
+    <script>
+        $(document).ready(function() {
+
+            var statusBadge = $('.badge');
+
+            $('.todo-status-checkbox').change(function () {
+                var todoId = $(this).data('todo-id');
+                var isChecked = $(this).prop('checked');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('todos.update-status') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        todo_id: todoId,
+                        is_checked: isChecked
+                    },
+                    success: function (data) {
+                        console.log("Status updated successfully");
+
+                        statusBadge.text(isChecked ? 'Completed' : 'Not Completed');
+
+                        statusBadge.removeClass('bg-success bg-warning').addClass(isChecked ? 'bg-success' : 'bg-warning');
+                    },
+                    error: function (error) {
+                        console.log("Error updating status: " + error);
+                    }
+                });
+            });
+        });
+    </script>
 
     <div class="text-center">
         <h2>All Todos</h2>
@@ -117,6 +148,7 @@
                                 @else
                                     <div class="badge bg-warning">Not Completed</div>
                                 @endif
+                                <input type="checkbox" class="todo-status-checkbox" data-todo-id="{{ $todo->id }}" {{ $todo->is_completed ? 'checked' : '' }}>
                             </td>
                             <td>
                                 <a href="{{ route('todos.edit', ['todo' => $todo->id]) }}" class="btn btn-info">Edit</a>

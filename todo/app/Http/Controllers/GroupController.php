@@ -72,4 +72,11 @@ class GroupController extends Controller
 
         return redirect()->route('groups.index')->with('success','Deleted Group');
     }
+
+    public function reorder(Request $request)
+    {
+        $groupId = $request->input('groupId');
+
+        return response()->json(['message' => 'Order updated successfully']);
+    }
 }
