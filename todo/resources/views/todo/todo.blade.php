@@ -65,10 +65,12 @@
                         return $(this).data("todo-id");
                     }).get();
 
+                    console.log(todoIds);
                     $.ajax({
                         type: "POST",
                         url: "{{ route('todos.reorder') }}",
                         data: {
+                            _token: '{{ csrf_token() }}',
                             todoIds: todoIds
                         },
                         success: function (data) {
@@ -85,12 +87,10 @@
     </script>
     <script>
         $(document).ready(function() {
-
-            var statusBadge = $('.badge');
-
             $('.todo-status-checkbox').change(function () {
                 var todoId = $(this).data('todo-id');
                 var isChecked = $(this).prop('checked');
+                var statusBadge = $(this).siblings('.badge');
 
                 $.ajax({
                     type: "POST",
@@ -122,7 +122,6 @@
                 <table class="table table-bordered" id="sortable-table">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Group</th>
                         <th scope="col">Commentary</th>
@@ -134,10 +133,10 @@
                     </thead>
                     <tbody>
 
-                    @php $counter=1 @endphp
-                    @foreach ($todos as $todo)
-                        <tr>
-                            <th>{{$counter}}</th>
+                    @php $sortedTodos = \App\Models\Todo::orderBy('sort_order')->get(); @endphp
+                    @foreach ($sortedTodos as $todo)
+                        @if ($todo->user_id == auth()->id())
+                        <tr data-todo-id="{{ $todo->id }}">
                             <th>{{$todo->title}}</th>
                             <th>{{$todo->group ? $todo->group->name : 'None'}}</th>
                             <th>{{$todo->commentary}}</th>
@@ -157,7 +156,7 @@
                             </td>
                             <th>{{$todo->shared_from}}</th>
                         </tr>
-                        @php $counter++; @endphp
+                        @endif
 
                     @endforeach
                     </tbody>

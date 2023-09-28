@@ -129,6 +129,12 @@ class TodoController extends Controller
     {
         $todoIds = $request->input('todoIds');
 
+        foreach ($todoIds as $key => $todoId) {
+            $todo = Todo::find($todoId);
+            $todo->sort_order = $key + 1;
+            $todo->save();
+        }
+
         return response()->json(['message' => 'Order updated successfully']);
     }
 
