@@ -49,6 +49,30 @@
 </head>
 <body>
 
+<script>
+    $(document).ready(function() {
+        $('#profile-photo-input').change(function() {
+            var formData = new FormData();
+            formData.append('profile_photo', $(this)[0].files[0]);
+            formData.append('_token', "{{ csrf_token() }}");
+
+            $.ajax({
+                type: 'POST',
+                url: '/profile/update-photo',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Profile photo updated successfully');
+                },
+                error: function(error) {
+                    console.error('Error updating profile photo: ' + error);
+                }
+            });
+        });
+    });
+</script>
+
 <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
     <div class="container">
         <a class="navbar-brand" href="#">Todo app by SSA001444</a>
@@ -66,6 +90,15 @@
                         <a class="nav-link" href="{{ route('register') }}">Register</a>
                     </li>
                 @else
+                    <li class="nav-link">
+                        <div>
+                            <img src="{{asset(auth()->user()->profile_photo) }}" alt="Profile Photo">
+                        </div>
+                        <div class="mt-2">
+                            <input type="file" id="profile-photo-input" style="display: none;">
+                            <label for="profile-photo-input" class="cursor-pointer text-primary">Change Photo</label>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <div class="nav-link">{{auth()->user()->email}}</div>
                     </li>

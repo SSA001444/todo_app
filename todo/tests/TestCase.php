@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Tests\Browser\CreatesApplication;
 
 abstract class TestCase extends BaseTestCase
 {

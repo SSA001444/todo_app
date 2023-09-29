@@ -5,7 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/todo/app" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/todo/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/todo/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
-      <sourceFolder url="file://$MODULE_DIR$/todo/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/todo/tests" isTestSource="true" packagePrefix="Tests\" />
       <excludeFolder url="file://$MODULE_DIR$/todo/todo/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/todo/todo/vendor/composer" />
@@ -230,6 +231,9 @@
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/todo/vendor/laravel/ui" />
+      <excludeFolder url="file://$MODULE_DIR$/todo/vendor/intervention/image" />
+      <excludeFolder url="file://$MODULE_DIR$/todo/vendor/laravel/dusk" />
+      <excludeFolder url="file://$MODULE_DIR$/todo/vendor/php-webdriver/webdriver" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

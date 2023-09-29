@@ -51,4 +51,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('groups/{group}', 'destroy')->name('groups.destroy');
         Route::post('groups/reorder', 'reorder')->name('groups.reorder');
     });
+
+    Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
+        Route::post('/profile/update-photo','updatePhoto')->name('profiles.update-photo');
+    });
 });
