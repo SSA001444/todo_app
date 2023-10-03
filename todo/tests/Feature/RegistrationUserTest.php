@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Feature;
 
 use App\Models\User;
 use App\Models\UserVerify;
@@ -16,10 +16,6 @@ class RegistrationUserTest extends TestCase
     public function testUserRegistration(): void
     {
 
-        $userData = [
-          'name' => 'Joe',
-            'email' => 'joe@exmp.com',
-        ];
         $response = $this->post('/store',[
             'username' => 'Joe',
             'email' => 'joe@exmp.com',

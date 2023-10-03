@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Feature;
 
 use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Tests\TestCase;
 
 
 class LoginUserTest extends TestCase
@@ -25,7 +25,7 @@ class LoginUserTest extends TestCase
 
 
         $response = $this->post('/authenticate', [
-            'email' => 'test@exmaple.com',
+            'identity' => 'SA',
             'password' => 'password',
         ]);
 

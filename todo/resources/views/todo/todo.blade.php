@@ -98,7 +98,7 @@
                     data: {
                         _token: "{{ csrf_token() }}",
                         todo_id: todoId,
-                        is_checked: isChecked
+                        is_checked: isChecked,
                     },
                     success: function (data) {
                         console.log("Status updated successfully");

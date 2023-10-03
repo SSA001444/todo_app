@@ -142,12 +142,12 @@ class TodoController extends Controller
     {
         try {
         $todoId = $request->input('todo_id');
-        $isChecked = $request->input('is_checked');
+        $isChecked = filter_var($request->input('is_checked'), FILTER_VALIDATE_BOOL);
 
         $todo = Todo::find($todoId);
 
         if ($todo) {
-            $todo->is_completed = $isChecked === 'true' ? true : false;
+            $todo->is_completed = $isChecked;
             $todo->save();
         }
 
