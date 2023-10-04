@@ -7,6 +7,8 @@ use App\Models\Group;
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -18,10 +20,9 @@ class TodoController extends Controller
     public function index()
     {
         // Passing variable to the edit view to display available todos and groups to the user
-        $todos = Todo::where('user_id', auth()->id())->get();
         $groups = Group::where('user_id', auth()->id())->get();
 
-        return view('todo.todo', compact('todos', 'groups'));
+        return view('todo.todo', compact( 'groups'));
     }
 
     public function store(Request $request)
@@ -34,12 +35,15 @@ class TodoController extends Controller
             return redirect()->route('todos.index')->withErrors($validator);
         }
 
-        Todo::create([
+        $todo = Todo::create([
             'title' => $request->get('title'),
             'group_id' => $request->get('group_id'),
             'commentary' => $request->get('commentary'),
             'user_id' => auth()->id(),
         ]);
+
+        $user = Auth::user();
+        $user->todo()->attach($todo);
 
         return redirect()->route('todos.index')->with('success', 'Inserted');
     }
@@ -79,6 +83,7 @@ class TodoController extends Controller
             return redirect()->route('todos.index')->with('error', 'Todo not found');
         }
         // Setting group_id to null to prevent database relationship error
+        DB::table('todo_user')->where('todo_id', $todo->id)->delete();
         $todo->group_id = null;
         $todo->save();
         $todo->delete();
@@ -115,9 +120,11 @@ class TodoController extends Controller
             'is_completed' => $todo->is_completed,
             'group_id' => $todo->group_id,
             'commentary' => $todo->commentary,
-            'user_id' => $recipientUser->id,
             'shared_from' => $sharedFrom->email,
+            'user_id' => $recipientUser->id,
         ]);
+
+        $todo->user()->attach($recipientUser);
         // Sending mail notification
         $shareTodo = new ShareTodo($todo);
         Mail::to($recipientEmail)->send($shareTodo);

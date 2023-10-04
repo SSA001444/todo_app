@@ -23,7 +23,7 @@ class Todo extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->BelongsToMany(User::class);
     }
 
     protected $casts = [

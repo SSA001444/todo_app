@@ -18,7 +18,7 @@ class User extends Authenticatable
 
     public function todo()
     {
-        return $this->hasMany(Todo::class);
+        return $this->BelongsToMany(Todo::class);
     }
 
     protected $casts = [

@@ -135,7 +135,7 @@
 
                     @php $sortedTodos = \App\Models\Todo::orderBy('sort_order')->get(); @endphp
                     @foreach ($sortedTodos as $todo)
-                        @if ($todo->user_id == auth()->id())
+                        @if ($todo->user->contains(auth()->user()))
                         <tr data-todo-id="{{ $todo->id }}">
                             <th>{{$todo->title}}</th>
                             <th>{{$todo->group ? $todo->group->name : 'None'}}</th>
