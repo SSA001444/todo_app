@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Events\TodoUpdated;
+use App\Events\TodoDeleted;
 
 
 class TodoController extends Controller
@@ -71,6 +73,7 @@ class TodoController extends Controller
         $todo->is_completed = $request->get('is_completed');
         $todo->group_id = $request->get('group_id');
         $todo->save();
+
 
         return redirect()->route('todos.index')->with('success', 'Updated Todo');
     }

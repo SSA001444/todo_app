@@ -13,5 +13,6 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_app
     ports:
       - 3306:3306

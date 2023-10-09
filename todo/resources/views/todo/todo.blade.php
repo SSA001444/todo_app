@@ -44,8 +44,8 @@
     </div>
 
     <script>
+        var socket = new WebSocket("ws://192.168.1.116:8000");
         $(document).ready(function () {
-
             $('.delete-button').click(function () {
                 var todoId = $(this).data('todo-id');
 
@@ -54,9 +54,6 @@
                 }
             });
         });
-    </script>
-    {{--Script to drop-down todos--}}
-    <script>
         $(document).ready(function () {
             $("#sortable-table tbody").sortable({
                 axis: "y",
@@ -84,8 +81,6 @@
             });
             $("#sortable-table tbody").disableSelection();
         });
-    </script>
-    <script>
         $(document).ready(function() {
             $('.todo-status-checkbox').change(function () {
                 var todoId = $(this).data('todo-id');
@@ -112,6 +107,28 @@
                     }
                 });
             });
+        });
+        $(document).ready(function() {
+            socket.onopen = function () {
+                alert("Connection success");
+            };
+            socket.onclose = function(event) {
+                if (event.wasClean) {
+                    alert("Connection close");
+                } else {
+                    alert("Connection kill");
+                }
+                alert("Code: " + event.code + " reason: " +event.reason);
+            };
+
+            socket.onmessage = function(event) {
+                alert("Get data: " + event.data);
+            };
+
+            socket.onerror = function(error) {
+                alert("Error: " + error.message);
+            };
+
         });
     </script>
 
