@@ -31,6 +31,7 @@ Route::controller(\App\Http\Controllers\Auth\ForgotPasswordController::class)->g
     Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
     Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+
 });
 
 Route::middleware(['auth'])->group(function () {

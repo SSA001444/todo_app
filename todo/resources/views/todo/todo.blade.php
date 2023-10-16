@@ -122,7 +122,14 @@
             };
 
             socket.onmessage = function(event) {
-                alert("Get data: " + event.data);
+                var json = JSON.parse(event.data);
+                var todos = document.getElementById('todos-table');
+                var recipientId = json.recipient_id;
+                var currentUserId = {{ auth()->id() }};
+
+                if (recipientId == currentUserId) {
+                    alert("You receive new todo: " + json.todo + " from: " + json.name);
+                }
             };
 
             socket.onerror = function(error) {
@@ -153,7 +160,7 @@
                     @php $sortedTodos = \App\Models\Todo::orderBy('sort_order')->get(); @endphp
                     @foreach ($sortedTodos as $todo)
                         @if ($todo->user->contains(auth()->user()))
-                        <tr data-todo-id="{{ $todo->id }}">
+                        <tr data-todo-id="{{ $todo->id }}" id="todos-table">
                             <th>{{$todo->title}}</th>
                             <th>{{$todo->group ? $todo->group->name : 'None'}}</th>
                             <th>{{$todo->commentary}}</th>

@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Events\TodoUpdated;
 use App\Events\TodoDeleted;
+use WebSocket\Client as WebSocketClient;
+
+
+
 
 
 class TodoController extends Controller
@@ -131,6 +135,16 @@ class TodoController extends Controller
         // Sending mail notification
         $shareTodo = new ShareTodo($todo);
         Mail::to($recipientEmail)->send($shareTodo);
+
+        $data = [
+            'name' => $sharedFrom->email,
+            'todo' => $todo->title,
+            'recipient_id' => $recipientUser->id,
+        ];
+        $client = new WebSocketClient("ws://192.168.1.116:8000");
+        $message = (json_encode($data));
+        $client->send($message, );
+        $client->close();
 
         return redirect()->route('todos.index')->with('success', 'Todo is shared');
     }
