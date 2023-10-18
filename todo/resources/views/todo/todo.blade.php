@@ -44,9 +44,10 @@
     </div>
 
     <script>
-        var socket = new WebSocket("ws://192.168.1.116:8000");
+        var socket = new WebSocket("ws://192.168.1.100:8000");
+
         $(document).ready(function () {
-            $('.delete-button').click(function () {
+            $(document).on('click', '.delete-button', function () {
                 var todoId = $(this).data('todo-id');
 
                 if (confirm('Are you sure you want to delete this todo?')) {
@@ -55,32 +56,32 @@
             });
         });
         $(document).ready(function () {
-            $("#sortable-table tbody").sortable({
-                axis: "y",
-                update: function (event, ui) {
-                    var todoIds = $("#sortable-table tbody tr").map(function () {
-                        return $(this).data("todo-id");
-                    }).get();
+                $("#sortable-table tbody").sortable({
+                    axis: "y",
+                    update: function (event, ui) {
+                        var todoIds = $("#sortable-table tbody tr").map(function () {
+                            return $(this).data("todo-id");
+                        }).get();
 
-                    console.log(todoIds);
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('todos.reorder') }}",
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            todoIds: todoIds
-                        },
-                        success: function (data) {
-                            console.log("Order updated successfully.");
-                        },
-                        error: function (error) {
-                            console.log("Error updating order: " + error);
-                        }
-                    });
-                }
+                        console.log(todoIds);
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('todos.reorder') }}",
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                todoIds: todoIds
+                            },
+                            success: function (data) {
+                                console.log("Order updated successfully.");
+                            },
+                            error: function (error) {
+                                console.log("Error updating order: " + error);
+                            }
+                        });
+                    }
+                });
+                $("#sortable-table tbody").disableSelection();
             });
-            $("#sortable-table tbody").disableSelection();
-        });
         $(document).ready(function() {
             $('.todo-status-checkbox').change(function () {
                 var todoId = $(this).data('todo-id');
@@ -123,15 +124,51 @@
 
             socket.onmessage = function(event) {
                 var json = JSON.parse(event.data);
-                var todos = document.getElementById('todos-table');
-                var recipientId = json.recipient_id;
+                var recipientId = json.user_id;
                 var currentUserId = {{ auth()->id() }};
+                var todos = document.getElementById('table-tbody');
+                var todo;
 
                 if (recipientId == currentUserId) {
-                    alert("You receive new todo: " + json.todo + " from: " + json.name);
+                    alert("You receive new todo: " + json.title + " from: " + json.name);
+                }
+                if (json.new) {
+                    $.get('load-todos', function (data) {
+
+                        var created_at;
+                        var foundTodo = data.find(function (todo) {
+                            created_at = todo.created_at;
+                            return todo.id === json.id;
+                        });
+
+                        if (foundTodo) {
+                            var todoRow = document.createElement('tr');
+                            todoRow.dataset.todoId = json.id;
+                            todoRow.setAttribute('class', 'ui-sortable-handle' );
+                            todoRow.setAttribute('id', 'todos-table' );
+                            todoRow.dataset.todo = JSON.stringify(foundTodo);
+                            todoRow.innerHTML = `
+                        <th>${json.title}</th>
+                        <th>${json.group_id !== null ? json.group_id : 'None'}</th>
+                        <th>${json.commentary !== null ? json.commentary : ''}</th>
+                        <th>${created_at}</th>
+                        <td>
+                            ${json.is_completed ? '<div class="badge bg-success">Completed</div>' : '<div class="badge bg-warning">Not Completed</div>'}
+                            <input type="checkbox" class="todo-status-checkbox" data-todo-id="${json.id}" ${json.is_completed ? 'checked' : ''}>
+                        </td>
+                        <td>
+                            <a href="/todos/${json.id}/edit" class="btn btn-info">Edit</a>
+                            <button class="btn btn-danger delete-button" data-todo-id="${json.id}">Delete</button>
+                            <a href="/share-todo/${json.id}" class="btn btn-info">Share</a>
+                        </td>
+                        <th>${json.shared_from}</th>
+                    `;
+                            todos.appendChild(todoRow);
+
+                        }
+                    });
                 }
             };
-
             socket.onerror = function(error) {
                 alert("Error: " + error.message);
             };
@@ -155,12 +192,12 @@
                         <th scope="col">Shared from</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-tbody">
 
                     @php $sortedTodos = \App\Models\Todo::orderBy('sort_order')->get(); @endphp
                     @foreach ($sortedTodos as $todo)
                         @if ($todo->user->contains(auth()->user()))
-                        <tr data-todo-id="{{ $todo->id }}" id="todos-table">
+                        <tr data-todo-id="{{ $todo->id }}" id="todos-table" data-todo="{{ $todo }}">
                             <th>{{$todo->title}}</th>
                             <th>{{$todo->group ? $todo->group->name : 'None'}}</th>
                             <th>{{$todo->commentary}}</th>

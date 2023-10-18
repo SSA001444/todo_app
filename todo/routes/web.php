@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/add-todo/{token}', 'add')->name('todo.add');
         Route::post('todos/reorder', 'reorder')->name('todos.reorder');
         Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
+        Route::get('/load-todos', 'loadTodos');
     });
 
     Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {

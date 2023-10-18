@@ -137,11 +137,19 @@ class TodoController extends Controller
         Mail::to($recipientEmail)->send($shareTodo);
 
         $data = [
+            'id' => $todo->id,
+            'title' => $todo->title,
+            'is_completed' => $todo->is_completed,
+            'group_id' => $todo->group_id,
+            'created_at' => $todo->created_at,
+            'commentary' => $todo->commentary,
+            'shared_from' => $sharedFrom->email,
+            'user_id' => $recipientUser->id,
             'name' => $sharedFrom->email,
-            'todo' => $todo->title,
-            'recipient_id' => $recipientUser->id,
+            'sort_order' => $todo->sort_order,
+            'new' => true,
         ];
-        $client = new WebSocketClient("ws://192.168.1.116:8000");
+        $client = new WebSocketClient("ws://192.168.1.100:8000");
         $message = (json_encode($data));
         $client->send($message, );
         $client->close();
@@ -180,5 +188,10 @@ class TodoController extends Controller
             Log::error('Error updating status: ' . $e->getMessage());
             return response()->json(['error' => 'Error Updating Status'], 500);
         }
+    }
+    public function loadTodos()
+    {
+        $todos = Todo::all();
+        return response()->json($todos);
     }
 }
