@@ -78,6 +78,19 @@ class TodoController extends Controller
         $todo->group_id = $request->get('group_id');
         $todo->save();
 
+        $data = [
+            'id' => $todo->id,
+            'title' => $todo->title,
+            'is_completed' => $todo->is_completed,
+            'group_id' => $todo->group_id,
+            'commentary' => $todo->commentary,
+            'new' => false,
+        ];
+        $client = new WebSocketClient("ws://192.168.1.100:8000");
+        $message = (json_encode($data));
+        $client->send($message);
+        $client->close();
+
 
         return redirect()->route('todos.index')->with('success', 'Updated Todo');
     }
@@ -93,6 +106,17 @@ class TodoController extends Controller
         DB::table('todo_user')->where('todo_id', $todo->id)->delete();
         $todo->group_id = null;
         $todo->save();
+
+        $data = [
+            'id' => $todo->id,
+            'new' => false,
+            'delete' => true,
+        ];
+        $client = new WebSocketClient("ws://192.168.1.100:8000");
+        $message = (json_encode($data));
+        $client->send($message);
+        $client->close();
+
         $todo->delete();
 
         return redirect()->route('todos.index')->with('success', 'Deleted Todo');

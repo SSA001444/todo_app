@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/groups', 'index')->name('groups.index');
         Route::get('groups/{group}', 'destroy')->name('groups.destroy');
         Route::post('groups/reorder', 'reorder')->name('groups.reorder');
+        Route::get('/load-groups', 'loadGroups');
     });
 
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {

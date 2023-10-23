@@ -79,4 +79,9 @@ class GroupController extends Controller
 
         return response()->json(['message' => 'Order updated successfully']);
     }
+    public function loadGroups()
+    {
+        $group = Group::all();
+        return response()->json($group);
+    }
 }

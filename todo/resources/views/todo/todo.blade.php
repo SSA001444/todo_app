@@ -111,13 +111,13 @@
         });
         $(document).ready(function() {
             socket.onopen = function () {
-                alert("Connection success");
+                console.log("Connection success");
             };
             socket.onclose = function(event) {
                 if (event.wasClean) {
-                    alert("Connection close");
+                    console.log("Connection close");
                 } else {
-                    alert("Connection kill");
+                    console.log("Connection kill");
                 }
                 alert("Code: " + event.code + " reason: " +event.reason);
             };
@@ -127,7 +127,6 @@
                 var recipientId = json.user_id;
                 var currentUserId = {{ auth()->id() }};
                 var todos = document.getElementById('table-tbody');
-                var todo;
 
                 if (recipientId == currentUserId) {
                     alert("You receive new todo: " + json.title + " from: " + json.name);
@@ -148,9 +147,9 @@
                             todoRow.setAttribute('id', 'todos-table' );
                             todoRow.dataset.todo = JSON.stringify(foundTodo);
                             todoRow.innerHTML = `
-                        <th>${json.title}</th>
-                        <th>${json.group_id !== null ? json.group_id : 'None'}</th>
-                        <th>${json.commentary !== null ? json.commentary : ''}</th>
+                        <th id="title">${json.title}</th>
+                        <th id="group">${json.group_id !== null ? json.group_id : 'None'}</th>
+                        <th id="commentary">${json.commentary !== null ? json.commentary : ''}</th>
                         <th>${created_at}</th>
                         <td>
                             ${json.is_completed ? '<div class="badge bg-success">Completed</div>' : '<div class="badge bg-warning">Not Completed</div>'}
@@ -168,11 +167,47 @@
                         }
                     });
                 }
+
+                if (json.new === false) {
+                    var groupName;
+                    $.get('load-groups', function (data) {
+                        var group = data.find(function (group) {
+                                groupName = group.name;
+                        });
+                    });
+
+                    $.get('load-todos', function (data) {
+                        var foundTodo = data.find(function (todo) {
+                            return todo.id === json.id;
+                        });
+
+                        if (foundTodo.group_id == null) {
+                            groupName = "None";
+                        }
+
+                        if (foundTodo) {
+                            var titleElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#title");
+                            var groupElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#group");
+                            var commentaryElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#commentary");
+                            var completedElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#check-completed");
+
+                            titleElement.textContent = json.title;
+                            groupElement.textContent = groupName;
+                            commentaryElement.textContent = json.commentary;
+                        }
+                    });
+                }
+
+                if (json.delete) {
+                    var todoRow = document.querySelector(`tr[data-todo-id='${json.id}']`);
+                    if (todoRow) {
+                        todoRow.remove();
+                    }
+                }
             };
             socket.onerror = function(error) {
                 alert("Error: " + error.message);
             };
-
         });
     </script>
 
@@ -198,9 +233,9 @@
                     @foreach ($sortedTodos as $todo)
                         @if ($todo->user->contains(auth()->user()))
                         <tr data-todo-id="{{ $todo->id }}" id="todos-table" data-todo="{{ $todo }}">
-                            <th>{{$todo->title}}</th>
-                            <th>{{$todo->group ? $todo->group->name : 'None'}}</th>
-                            <th>{{$todo->commentary}}</th>
+                            <th id="title">{{$todo->title}}</th>
+                            <th id="group">{{$todo->group ? $todo->group->name : 'None'}}</th>
+                            <th id="commentary">{{$todo->commentary}}</th>
                             <th>{{$todo->created_at}}</th>
                             <td>
                                 @if ($todo->is_completed)
@@ -208,7 +243,7 @@
                                 @else
                                     <div class="badge bg-warning">Not Completed</div>
                                 @endif
-                                <input type="checkbox" class="todo-status-checkbox" data-todo-id="{{ $todo->id }}" {{ $todo->is_completed ? 'checked' : '' }}>
+                                <input type="checkbox" id="check-completed" class="todo-status-checkbox" data-todo-id="{{ $todo->id }}" {{ $todo->is_completed ? 'checked' : '' }}>
                             </td>
                             <td>
                                 <a href="{{ route('todos.edit', ['todo' => $todo->id]) }}" class="btn btn-info">Edit</a>
