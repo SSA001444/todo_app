@@ -31,6 +31,10 @@
                     <label class="form-label">Title</label>
                     <input type="email" class="form-control" name="email" placeholder="Email">
                 </div>
+                <div>
+                    <div>Grant access to this todo</div>
+                    <input type="checkbox" id="access-checkbox" name="todoAccess" class="todo-access-share-checkbox">
+                </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Share</button>
                 </div>

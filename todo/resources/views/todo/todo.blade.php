@@ -160,7 +160,7 @@
                             <button class="btn btn-danger delete-button" data-todo-id="${json.id}">Delete</button>
                             <a href="/share-todo/${json.id}" class="btn btn-info">Share</a>
                         </td>
-                        <th>${json.shared_from}</th>
+                        <th></th>
                     `;
                             todos.appendChild(todoRow);
 
@@ -189,11 +189,24 @@
                             var titleElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#title");
                             var groupElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#group");
                             var commentaryElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#commentary");
-                            var completedElement = document.querySelector("tr[data-todo-id='" + json.id + "'] th#check-completed");
+                            var completedElement = document.querySelector("tr[data-todo-id='" + json.id + "'] input#check-completed");
+                            var statusBadge = document.querySelector("tr[data-todo-id='" + json.id + "'] div.badge");
 
                             titleElement.textContent = json.title;
                             groupElement.textContent = groupName;
                             commentaryElement.textContent = json.commentary;
+                            if (json.is_completed) {
+                                completedElement.checked = true;
+                                statusBadge.textContent = "Completed"
+                                statusBadge.classList.remove('bg-success', 'bg-warning');
+                                statusBadge.classList.add('bg-success');
+
+                            } else {
+                                completedElement.checked = false;
+                                statusBadge.textContent = "Not Completed";
+                                statusBadge.classList.remove('bg-success', 'bg-warning');
+                                statusBadge.classList.add('bg-warning');
+                            }
                         }
                     });
                 }
@@ -202,6 +215,22 @@
                     var todoRow = document.querySelector(`tr[data-todo-id='${json.id}']`);
                     if (todoRow) {
                         todoRow.remove();
+                    }
+                }
+                if (json.updateStatus) {
+                    var completedElement = document.querySelector("tr[data-todo-id='" + json.id + "'] input#check-completed");
+                    var statusBadge = document.querySelector("tr[data-todo-id='" + json.id + "'] div.badge");
+                    if (json.is_completed) {
+                        completedElement.checked = true;
+                        statusBadge.textContent = "Completed"
+                        statusBadge.classList.remove('bg-success', 'bg-warning');
+                        statusBadge.classList.add('bg-success');
+
+                    } else {
+                        completedElement.checked = false;
+                        statusBadge.textContent = "Not Completed";
+                        statusBadge.classList.remove('bg-success', 'bg-warning');
+                        statusBadge.classList.add('bg-warning');
                     }
                 }
             };
@@ -239,9 +268,9 @@
                             <th>{{$todo->created_at}}</th>
                             <td>
                                 @if ($todo->is_completed)
-                                    <div class="badge bg-success">Completed</div>
+                                    <div id="badgeComp" class="badge bg-success">Completed</div>
                                 @else
-                                    <div class="badge bg-warning">Not Completed</div>
+                                    <div id="badgeNotComp" class="badge bg-warning">Not Completed</div>
                                 @endif
                                 <input type="checkbox" id="check-completed" class="todo-status-checkbox" data-todo-id="{{ $todo->id }}" {{ $todo->is_completed ? 'checked' : '' }}>
                             </td>

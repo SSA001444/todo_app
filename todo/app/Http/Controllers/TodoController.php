@@ -135,7 +135,7 @@ class TodoController extends Controller
         // Setting email recipient and user
         $recipientEmail = $request->input('email');
         $recipientUser = User::where('email', $recipientEmail)->first();
-
+        $isChecked = $request->has('todoAccess');
         if (!$recipientUser) {
             return back()->withErrors('User with this email does not found!');
         }
@@ -145,38 +145,43 @@ class TodoController extends Controller
         }
 
         $sharedFrom = User::where('id', $todo->user_id)->first();
-        // Creation task in recipient user account
-        Todo::create([
-            'title' => $todo->title,
-            'is_completed' => $todo->is_completed,
-            'group_id' => $todo->group_id,
-            'commentary' => $todo->commentary,
-            'shared_from' => $sharedFrom->email,
-            'user_id' => $recipientUser->id,
-        ]);
 
-        $todo->user()->attach($recipientUser);
-        // Sending mail notification
-        $shareTodo = new ShareTodo($todo);
-        Mail::to($recipientEmail)->send($shareTodo);
+        if (!$isChecked) {
+            // Creation task in recipient user account
+            $newTodo = Todo::create([
+                'title' => $todo->title,
+                'is_completed' => $todo->is_completed,
+                'group_id' => $todo->group_id,
+                'commentary' => $todo->commentary,
+                'shared_from' => $sharedFrom->email,
+                'user_id' => $recipientUser->id,
+            ]);
 
-        $data = [
-            'id' => $todo->id,
-            'title' => $todo->title,
-            'is_completed' => $todo->is_completed,
-            'group_id' => $todo->group_id,
-            'created_at' => $todo->created_at,
-            'commentary' => $todo->commentary,
-            'shared_from' => $sharedFrom->email,
-            'user_id' => $recipientUser->id,
-            'name' => $sharedFrom->email,
-            'sort_order' => $todo->sort_order,
-            'new' => true,
-        ];
-        $client = new WebSocketClient("ws://192.168.1.100:8000");
-        $message = (json_encode($data));
-        $client->send($message, );
-        $client->close();
+            $recipientUser->todo()->attach($newTodo);
+        }
+            // Sending mail notification
+            $shareTodo = new ShareTodo($todo);
+            Mail::to($recipientEmail)->send($shareTodo);
+            if ($isChecked) {
+                $todo->user()->attach($recipientUser);
+                $data = [
+                    'id' => $todo->id,
+                    'title' => $todo->title,
+                    'is_completed' => $todo->is_completed,
+                    'group_id' => $todo->group_id,
+                    'created_at' => $todo->created_at,
+                    'commentary' => $todo->commentary,
+                    'user_id' => $recipientUser->id,
+                    'name' => $sharedFrom->email,
+                    'sort_order' => $todo->sort_order,
+                    'new' => true,
+                ];
+
+                $client = new WebSocketClient("ws://192.168.1.100:8000");
+                $message = (json_encode($data));
+                $client->send($message);
+                $client->close();
+            }
 
         return redirect()->route('todos.index')->with('success', 'Todo is shared');
     }
@@ -205,6 +210,16 @@ class TodoController extends Controller
         if ($todo) {
             $todo->is_completed = $isChecked;
             $todo->save();
+            $data = [
+                'id' => $todo->id,
+                'is_completed' => $todo->is_completed,
+                'updateStatus' => true,
+
+            ];
+            $client = new WebSocketClient("ws://192.168.1.100:8000");
+            $message = (json_encode($data));
+            $client->send($message);
+            $client->close();
         }
 
         return response()->json(['success' => true]);
