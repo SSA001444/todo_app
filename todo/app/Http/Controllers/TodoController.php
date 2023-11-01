@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ShareTodo;
 use App\Models\Group;
+use App\Models\Subtask;
 use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -199,7 +200,7 @@ class TodoController extends Controller
         return response()->json(['message' => 'Order updated successfully']);
     }
 
-    public function updateStatus(Request $request)
+    public function todosUpdateStatus(Request $request)
     {
         try {
         $todoId = $request->input('todo_id');
@@ -228,9 +229,57 @@ class TodoController extends Controller
             return response()->json(['error' => 'Error Updating Status'], 500);
         }
     }
+
     public function loadTodos()
     {
         $todos = Todo::all();
         return response()->json($todos);
+    }
+
+    public function loadSubtasks(Request $request, $todo)
+    {
+        $subtasks = Subtask::where('todo_id', $todo)->get();
+        return response()->json($subtasks);
+    }
+
+    public function addSubtask(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+        ]);
+
+        $subtask = Subtask::create([
+            'title' => $request->get('title'),
+            'todo_id' => $request->get('todo_id'),
+        ]);
+    }
+
+    public function subtaskUpdateStatus(Request $request)
+    {
+        try {
+            $subtaskId = $request->input('subtask_id');
+            $isChecked = filter_var($request->input('is_checked'), FILTER_VALIDATE_BOOL);
+            $subtask = Subtask::find($subtaskId);
+
+            if ($subtask) {
+                $subtask->is_completed = $isChecked;
+                $subtask->save();
+                $data = [
+                    'id' => $subtask->id,
+                    'is_completed' => $subtask->is_completed,
+                    'subtaskUpdateStatus' => true,
+
+                ];
+                $client = new WebSocketClient("ws://192.168.1.100:8000");
+                $message = (json_encode($data));
+                $client->send($message);
+                $client->close();
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            Log::error('Error updating status: ' . $e->getMessage());
+            return response()->json(['error' => 'Error Updating Status'], 500);
+        }
     }
 }

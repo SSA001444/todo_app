@@ -26,6 +26,11 @@ class Todo extends Model
         return $this->BelongsToMany(User::class);
     }
 
+    public function subtasks()
+    {
+        return $this->hasMany(Subtask::class, 'todo_id');
+    }
+
     protected $casts = [
         'is_completed' => 'boolean',
     ];

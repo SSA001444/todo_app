@@ -108,6 +108,26 @@
                     }
                 });
             });
+            $('#sortable-table').on('change', '.subtask-status-checkbox', function () {
+                var subtaskId = $(this).data('subtask-id');
+                var isChecked = $(this).prop('checked');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('subtask.update-status') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        subtask_id: subtaskId,
+                        is_checked: isChecked,
+                    },
+                    success: function (data) {
+
+                    },
+                    error: function (error) {
+                        console.log("Error updating status: " + error);
+                    }
+                });
+            });
         });
         $(document).ready(function() {
             socket.onopen = function () {
@@ -238,6 +258,72 @@
                 alert("Error: " + error.message);
             };
         });
+
+        $(document).ready(function() {
+            $(".toggle-subtasks-button").click(function () {
+                var button = $(this);
+                var subtasksList = button.siblings(".subtasks-list");
+                var todoId = button.closest("tr").data("todo-id");
+                if (subtasksList.is(":visible")) {
+                    subtasksList.hide();
+                } else {
+                    $.get("/load-subtasks/" + todoId, function (data) {
+
+                        var subtask = data.find(function (subtask) {
+                            return subtask.todo_id = todoId;
+                        });
+
+                        if(subtask) {
+                            subtasksList.empty();
+
+                            $.each(data, function (index, subtask) {
+
+                                var subtaskDiv = $('<div>');
+
+                                var titleDiv = $('<div>').text(subtask.title);
+
+                                var checkbox = $('<input>')
+                                    .attr('type', 'checkbox')
+                                    .attr('id', 'subtask-completed')
+                                    .addClass('subtask-status-checkbox')
+                                    .attr('data-subtask-id', subtask.id)
+                                    .prop('checked', subtask.is_completed);
+
+                                subtaskDiv.append(titleDiv);
+                                subtaskDiv.append(checkbox);
+
+                                subtasksList.append(subtaskDiv);
+                            });
+                            subtasksList.show();
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error loading subtasks: " + errorThrown);
+                    });
+                }
+            });
+            $(".submit-subtask-button").click(function() {
+                var button = $(this);
+                var subtaskForm = button.closest(".subtask-form");
+                var todoId = button.closest("tr").data("todo-id");
+                var subtaskTitle = subtaskForm.find(".subtask-title").val();
+
+                $.ajax({
+                    url: "/add-subtask",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        todo_id: todoId,
+                        title: subtaskTitle
+                    },
+                    success: function(data) {
+
+                    },
+                    error: function(error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            });
+        });
     </script>
 
     <div class="text-center">
@@ -280,7 +366,18 @@
                                 <a href="{{ route('todo.share', ['todo' => $todo->id]) }}" class="btn btn-info">Share</a>
                             </td>
                             <th>{{$todo->shared_from}}</th>
-                        </tr>
+                            <td>
+                                <button class="toggle-subtasks-button">Show subtasks</button>
+                                <div class="subtasks-list">
+
+                                </div>
+                            </td>
+                            <td>
+                                <form class="subtask-form">
+                                    <button class="submit-subtask-button">Add subtask</button>
+                                    <input type="text" class="subtask-title" placeholder="Title">
+                                </form>
+                            </td>
                         @endif
 
                     @endforeach

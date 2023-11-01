@@ -43,8 +43,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('share-todo/{todo}', 'share')->name('todo.share');
         Route::get('/add-todo/{token}', 'add')->name('todo.add');
         Route::post('todos/reorder', 'reorder')->name('todos.reorder');
-        Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
+        Route::post('todos/update-status', 'todosUpdateStatus')->name('todos.update-status');
         Route::get('/load-todos', 'loadTodos');
+        Route::get('/load-subtasks/{todo}', 'loadSubtasks')->name('load-subtasks');
+        Route::post('/add-subtask', 'addSubtask');
+        Route::post('subtask/update-status', 'subtaskUpdateStatus')->name('subtask.update-status');
+
     });
 
     Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
