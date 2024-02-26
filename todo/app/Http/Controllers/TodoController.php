@@ -105,6 +105,9 @@ class TodoController extends Controller
         $recipientEmail = $request->input('email');
         $recipientUser = User::where('email', $recipientEmail)->first();
 
+
+
+
         if (!$recipientUser) {
             return back()->withErrors('User with this email does not found!');
         }
@@ -113,21 +116,28 @@ class TodoController extends Controller
             return back()->withErrors('You cannot share a todo with yourself!');
         }
 
-        $sharedFrom = User::where('id', $todo->user_id)->first();
-        // Creation task in recipient user account
-        Todo::create([
-            'title' => $todo->title,
-            'is_completed' => $todo->is_completed,
-            'group_id' => $todo->group_id,
-            'commentary' => $todo->commentary,
-            'shared_from' => $sharedFrom->email,
-            'user_id' => $recipientUser->id,
-        ]);
+        if ($request->has('share_access')) {
 
-        $todo->user()->attach($recipientUser);
-        // Sending mail notification
-        $shareTodo = new ShareTodo($todo);
-        Mail::to($recipientEmail)->send($shareTodo);
+            $todo->user()->attach($recipientUser);
+            // Sending mail notification
+            $shareTodo = new ShareTodo($todo);
+            Mail::to($recipientEmail)->send($shareTodo);
+        } else {
+            $sharedFrom = User::where('id', $todo->user_id)->first();
+            // Creation task in recipient user account
+            $newTodo = Todo::create([
+                'title' => $todo->title,
+                'is_completed' => $todo->is_completed,
+                'group_id' => $todo->group_id,
+                'commentary' => $todo->commentary,
+                'shared_from' => $sharedFrom->email,
+                'user_id' => $recipientUser->id,
+            ]);
+
+            $recipientUser->todo()->attach($newTodo);
+            $shareTodo = new ShareTodo($todo);
+            Mail::to($recipientEmail)->send($shareTodo);
+        }
 
         return redirect()->route('todos.index')->with('success', 'Todo is shared');
     }
@@ -148,18 +158,18 @@ class TodoController extends Controller
     public function updateStatus(Request $request)
     {
         try {
-        $todoId = $request->input('todo_id');
-        $isChecked = filter_var($request->input('is_checked'), FILTER_VALIDATE_BOOL);
+            $todoId = $request->input('todo_id');
+            $isChecked = filter_var($request->input('is_checked'), FILTER_VALIDATE_BOOL);
 
-        $todo = Todo::find($todoId);
+            $todo = Todo::find($todoId);
 
-        if ($todo) {
-            $todo->is_completed = $isChecked;
-            $todo->save();
-        }
+            if ($todo) {
+                $todo->is_completed = $isChecked;
+                $todo->save();
+            }
 
-        return response()->json(['success' => true]);
-    } catch (\Exception $e) {
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
             Log::error('Error updating status: ' . $e->getMessage());
             return response()->json(['error' => 'Error Updating Status'], 500);
         }

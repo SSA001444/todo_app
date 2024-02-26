@@ -64,9 +64,10 @@
                 contentType: false,
                 success: function(response) {
                     console.log('Profile photo updated successfully');
+                    window.location.reload();
                 },
                 error: function(error) {
-                    console.error('Error updating profile photo: ' + error);
+                    console.error('Error updating profile photo:', error.responseJSON || error.responseText);
                 }
             });
         });
@@ -92,10 +93,15 @@
                 @else
                     <li class="nav-link">
                         <div>
-                            <img src="{{asset(auth()->user()->profile_photo) }}" alt="Profile Photo">
+                            @php
+                                $userPhoto = auth()->user()->profile_photo;
+                                $defaultPhoto = 'storage/profile-photos/StandartPhoto.png';
+                                $photoPath = $userPhoto && file_exists(public_path($userPhoto)) ? asset($userPhoto) : asset($defaultPhoto);
+                            @endphp
+                            <img src="{{$photoPath}}" alt="Profile Photo">
                         </div>
                         <div class="mt-2">
-                            <input type="file" id="profile-photo-input" style="display: none;">
+                            <input type="file" name="profile_photo" id="profile-photo-input" style="display: none;">
                             <label for="profile-photo-input" class="cursor-pointer text-primary">Change Photo</label>
                         </div>
                     </li>
