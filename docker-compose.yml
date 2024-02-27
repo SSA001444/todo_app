@@ -2,17 +2,27 @@ services:
 
 
   laravel-docker:
+    networks:
+      - todo_app_laravel_network
     container_name: laravel-docker
     build: .
+    environment:
+      - DB_HOST=mysql_db
     volumes:
       - ./todo:/var/www/html
     ports:
-      - 9000:80
+      - 8000:80
 
   mysql_db:
+    networks:
+      - todo_app_laravel_network
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: todo_app
     ports:
       - 3306:3306
+
+
+networks:
+  todo_app_laravel_network:
+    external: true
