@@ -27,7 +27,7 @@ class ProfileController extends Controller
                 $image = $request->file('profile_photo');
                 $imageName = 'profile_' . time() . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storePublicly('profile-photos', 'public');
-                Image::make(storage_path('app/public/' . $imagePath))->resize(100, 50)->save();
+                Image::make(storage_path('app/public/' . $imagePath))->resize(55, 55)->save();
 
                 $imagePath = '/storage/'.$imagePath;
                 $user->profile_photo = $imagePath;

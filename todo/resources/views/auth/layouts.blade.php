@@ -1,22 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Todo App by SSA001444</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/group.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/section-1.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="shortcut icon" href="{{ asset('images/bird.png') }}">
     <style type="text/css">
         @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
-        body{
-            margin: 0;
-            font-size: .9rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #212529;
-            text-align: left;
-            background-color: #f5f8fa;
-        }
         .navbar-laravel
         {
             box-shadow: 0 2px 4px rgba(0,0,0,.04);
@@ -51,6 +47,10 @@
 
 <script>
     $(document).ready(function() {
+        $('.header-img-php').click(function() {
+
+            $('#profile-photo-input').click();
+        });
         $('#profile-photo-input').change(function() {
             var formData = new FormData();
             formData.append('profile_photo', $(this)[0].files[0]);
@@ -74,56 +74,54 @@
     });
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
-    <div class="container">
-        <a class="navbar-brand" href="#">Todo app by SSA001444</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
+    <header>
+        <div class="container">
                 @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">Register</a>
-                    </li>
+                    <div class="header-butt-2">
+                        <a class="header-logreg" href="{{ route('login') }}">Login</a>
+
+                        <a class="header-logreg" href="{{ route('register') }}">Register</a>
+                    </div>
                 @else
-                    <li class="nav-link">
-                        <div>
-                            @php
-                                $userPhoto = auth()->user()->profile_photo;
-                                $defaultPhoto = 'storage/profile-photos/StandartPhoto.png';
-                                $photoPath = $userPhoto && file_exists(public_path($userPhoto)) ? asset($userPhoto) : asset($defaultPhoto);
-                            @endphp
-                            <img src="{{$photoPath}}" alt="Profile Photo">
+                <div class="header-item">
+                    <div class="header-logo">
+                        <div class="header-php-div">
+                            <label for="profile-photo-input" class="header-php">
+                                @php
+                                    $userPhoto = auth()->user()->profile_photo;
+                                    $defaultPhoto = asset('images/auth/login/2.png');
+                                    $photoPath = $userPhoto && file_exists(public_path($userPhoto)) ? asset($userPhoto) : asset($defaultPhoto);
+                                @endphp
+                                <img src="{{$photoPath}}" alt="Profile Photo" class="header-img-php">
+                                <div class="overlay"></div>
+                                <input type="file" name="profile_photo" id="profile-photo-input" style="display: none;">
+                                <img src="{{ asset('images/todo/header/12312.png') }}" alt="Profile Photo" class="header-hover-img">
+                            </label>
                         </div>
-                        <div class="mt-2">
-                            <input type="file" name="profile_photo" id="profile-photo-input" style="display: none;">
-                            <label for="profile-photo-input" class="cursor-pointer text-primary">Change Photo</label>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <div class="nav-link">{{auth()->user()->email}}</div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('todos.index')}}">Todos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('groups.index')}}">Groups</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}">Logout</a>
-                    </li>
+                        <a class="header-logout" href="{{ route('logout') }}">Logout</a>
+                    </div>
 
+                <div class="header-butt">
+                    <form class="header-form">
+                        <label>
+                            <select class="header-select" name="" id="">
+                                <option value="">EN</option>
+                                <option value="">RU</option>
+                            </select>
+                        </label>
+                    </form>
+                    <a class="header-logout" href="{{route('todos.index')}}">Todos</a>
+
+                    <a class="header-logout" href="{{route('groups.index')}}">Groups</a>
+                </div>
                 @endguest
-            </ul>
-
+            </div>
         </div>
+    </header>
+    <div class="header-line">
+        <hr class="header-hr">
     </div>
-</nav>
 
 @yield('content')
 
