@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/add-todo/{token}', 'add')->name('todo.add');
         Route::post('todos/reorder', 'reorder')->name('todos.reorder');
         Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
+        Route::get('/messenger', 'messenger')->name('messenger');
     });
 
     Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
@@ -54,5 +55,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
         Route::post('/profile/update-photo','updatePhoto')->name('profiles.update-photo');
+    });
+    Route::controller(\App\Http\Controllers\MessengerController::class)->group(function () {
+        Route::get('/messenger', 'index')->name('messenger');
+        Route::get('/messenger/{userId}', 'showDialog')->name('messenger.dialog');
+        Route::post('/messenger/{userId}/send', 'sendMessage')->name('messenger.send');
     });
 });

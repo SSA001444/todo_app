@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
     <link rel="shortcut icon" href="{{ asset('images/bird.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/messenger.css') }}">
     <style type="text/css">
         @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 

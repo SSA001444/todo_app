@@ -1,5 +1,5 @@
 .section-1-item{
-    padding-top: 0px;
+    padding-top: 0;
     display: flex;
     justify-content: center;
 }
@@ -7,7 +7,6 @@
     width: 360px;
     height: auto;
 }
-
 
 .box-line-section-1{
     display: flex;
@@ -188,6 +187,6 @@ body{
     left: 900px;
 }
 .sec1-circle8{
-    top: px;
+    top: 0px;
     left: 1500px;
 }
