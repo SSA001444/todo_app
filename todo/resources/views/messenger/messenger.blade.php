@@ -10,7 +10,7 @@
                 @foreach($contacts as $contact)
                     <div class="contact-item">
                         <div class="contact-avatar">
-                            <img src="{{ $contact->profile_photo ? asset($contact->profile_photo) : asset('images/auth/login/2.png') }}" alt="{{ $contact->username }}" class="contact-avatar-img">
+                            <img src="{{ $contact->profile_photo ? asset($contact->profile_photo) : 'https://via.placeholder.com/40' }}" alt="{{ $contact->username }}" class="contact-avatar-img">
                         </div>
                         <div class="contact-name">
                             <a href="{{ route('messenger.dialog', ['userId' => $contact->id]) }}">{{ $contact->username }}</a>
@@ -32,8 +32,20 @@
                     @foreach($messages as $message)
                         <div class="message {{ $message->user_id == Auth::id() ? 'sent' : 'received' }}">
                             <strong>{{ $message->user->username }}:</strong> {{ $message->message }}
+                            @if($message->user_id == Auth::id())
+                                <span class="message-actions">
+                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ $message->message }}"><i class="fas fa-edit"></i></button>
+                                    <form action="{{ route('messenger.delete', ['messageId' => $message->id]) }}" method="POST" class="inline-form">
+                                    @csrf
+                                        @method('DELETE')
+                                    <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </span>
+                            @endif
                         </div>
                     @endforeach
+                @else
+                    <p>No messages yet.</p>
                 @endisset
             </div>
             @isset($selectedUser)
@@ -47,4 +59,43 @@
             @endisset
         </div>
     </div>
+
+    <div id="editMessageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="editMessageForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="form-group">
+                    <label for="editMessageText">Message</label>
+                    <input type="text" id="editMessageText" name="message" class="message-input">
+                </div>
+                <button type="submit" class="send-button">Save changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var modal = $('#editMessageModal');
+            var span = $('.close');
+            span.on('click', function() {
+                modal.hide();
+            });
+
+            $('.btn-icon[data-message-id]').on('click', function() {
+                var messageId = $(this).data('message-id');
+                var messageText = $(this).data('message-text');
+                $('#editMessageText').val(messageText);
+                $('#editMessageForm').attr('action', '/messenger/' + messageId);
+                modal.show();
+            });
+
+            $(window).on('click', function(event) {
+                if ($(event.target).is(modal)) {
+                    modal.hide();
+                }
+            });
+        });
+    </script>
 @endsection

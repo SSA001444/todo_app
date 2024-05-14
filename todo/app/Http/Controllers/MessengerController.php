@@ -32,6 +32,38 @@ class MessengerController extends Controller
         return view('messenger.messenger', compact('contacts', 'messages', 'selectedUser'));
     }
 
+    public function deleteMessage($messageId)
+    {
+        $message = Message::findOrFail($messageId);
+
+        if ($message->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'You can only delete your own messages.');
+        }
+
+        $message->delete();
+
+        return redirect()->back()->with('success', 'Message deleted successfully.');
+    }
+
+    public function editMessage(Request $request, $messageId)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $message = Message::findOrFail($messageId);
+
+        if ($message->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'You can only edit your own messages.');
+        }
+
+        $message->update([
+            'message' => $request->message,
+        ]);
+
+        return redirect()->back()->with('success', 'Message edited successfully.');
+    }
+
     public function sendMessage(Request $request, $userId)
     {
         $request->validate([

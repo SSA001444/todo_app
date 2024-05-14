@@ -60,5 +60,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/messenger', 'index')->name('messenger');
         Route::get('/messenger/{userId}', 'showDialog')->name('messenger.dialog');
         Route::post('/messenger/{userId}/send', 'sendMessage')->name('messenger.send');
+        Route::put('/messenger/{messageId}', 'editMessage')->name('messenger.edit');
+        Route::delete('/messenger/{messageId}', 'deleteMessage')->name('messenger.delete');
     });
 });
