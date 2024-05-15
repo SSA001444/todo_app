@@ -50,8 +50,9 @@ header{
 
 .header-butt-2 {
     display: flex;
-    margin-left: auto;
+    justify-content: flex-end;
     align-items: center;
+    width:90%;
 }
 
 .header-logreg{

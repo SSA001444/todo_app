@@ -1,15 +1,11 @@
 services:
-
-
   laravel-docker:
     container_name: laravel-docker
     build: .
-    environment:
-      - DB_HOST=mysql_db
     volumes:
       - ./todo:/var/www/html
     ports:
-      - 8000:80
+      - 9000:80
 
   mysql_db:
     image: mysql

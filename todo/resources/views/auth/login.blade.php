@@ -35,7 +35,7 @@
             <div class="input-input">
                 <input type="password" class="input" name="password" placeholder="Enter your password">
                 @if ($errors->has('password'))
-                    <span class="invalid-feedback">{{ $errors->first('password') }}</span>
+                    <span class="invalid-feedback" role="alert">{{ $errors->first('password') }}</span>
                 @endif
             </div>
 

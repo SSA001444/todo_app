@@ -4,7 +4,6 @@
     <title>Todo App by SSA001444</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/group.css') }}">
     <link rel="stylesheet" href="{{ asset('css/section-1.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">

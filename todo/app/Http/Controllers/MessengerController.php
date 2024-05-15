@@ -59,6 +59,7 @@ class MessengerController extends Controller
 
         $message->update([
             'message' => $request->message,
+            'edited' => true,
         ]);
 
         return redirect()->back()->with('success', 'Message edited successfully.');

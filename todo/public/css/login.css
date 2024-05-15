@@ -130,9 +130,9 @@ body{
 
 
 .invalid-feedback {
-    position: absolute;
-    transform: translateY(-50%);
     color: #721c24;
-    font-size: 0.875rem;
-    z-index: 1;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
 }

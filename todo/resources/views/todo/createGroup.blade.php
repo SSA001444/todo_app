@@ -26,7 +26,7 @@
             <div class="groups-item2">
                 <div class="section-1-item">
                     <div class="section-1-logo">
-                        <img alt="Logo" class="section-1-img">
+                        <img alt="Logo" class="section-1-img" src="{{ asset('images/todo/header/to_do_3.png') }}">
                     </div>
                 </div>
             </div>
@@ -36,6 +36,7 @@
                     <div class="groups-center">
                         <h2 class="group-title">Add group</h2>
                          <form action="{{ route('groups.store') }}" method="POST" class="group-form" >
+                             @csrf
                              <input type="text" name="name" class="group-select" PLACEHOLDER="Title group">
                              <button class="but-group" type="submit">Submit</button>
                          </form>
@@ -71,15 +72,14 @@
 
                         <h2 class="group-title2">All Groups</h2>
 
-                        <div class="">
-                            <div class="col-lg-6">
-                                <table class="table table-bordered" id="sortable-table">
+                        <div class="table-wrapper">
+                                <table class="fl-table" id="sortable-table">
                                     <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Created at</th>
-                                        <th scope="col">Actions</th>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Created at</th>
+                                        <th>Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -87,24 +87,22 @@
                                     @php $counter=1 @endphp
                                     @foreach ($groups as $group)
                                         <tr>
-                                            <th>{{ $counter }}</th>
-                                            <th>{{ $group->name }}</th>
-                                            <th>{{ $group->created_at }}</th>
+                                            <td>{{ $counter }}</td>
+                                            <td>{{ $group->name }}</td>
+                                            <td>{{ $group->created_at }}</td>
                                             <td>
-                                                <a href="{{ route('groups.edit', ['group' => $group->id]) }}" class="btn btn-info">Edit</a>
-                                                <a href="{{ route('groups.destroy', ['group' => $group->id] )}}" class="btn btn-danger">Delete</a>
+                                                <a href="{{ route('groups.edit', ['group' => $group->id]) }}" class="group-act-edit group-luke">Edit</a>
+                                                <a href="{{ route('groups.destroy', ['group' => $group->id] )}}" class="group-act-del">Delete</a>
+
                                             </td>
                                         </tr>
                                         @php $counter++; @endphp
                                     @endforeach
                                     </tbody>
                                 </table>
-
-
+                                </div>
                     </div>
                 </div>
-            </div>
-        </div>
             </div>
         </div>
     </section>

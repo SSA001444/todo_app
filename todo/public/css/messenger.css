@@ -207,3 +207,19 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.edited-label {
+    position: absolute;
+    top: 38px;
+    right: 10px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.sent-label {
+    position: absolute;
+    top: 38px;
+    left: 10px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+}

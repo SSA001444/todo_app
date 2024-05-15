@@ -32,15 +32,23 @@
                     @foreach($messages as $message)
                         <div class="message {{ $message->user_id == Auth::id() ? 'sent' : 'received' }}">
                             <strong>{{ $message->user->username }}:</strong> {{ $message->message }}
+                            @if($message->edited)
+                                <div class="edited-label">
+                                    edited {{ $message->updated_at->addHours(3)->format('H:i') }}
+                                </div>
+                            @endif
+                            <div class="sent-label">
+                                sent {{ $message->created_at->addHours(3)->format('H:i') }}
+                            </div>
                             @if($message->user_id == Auth::id())
-                                <span class="message-actions">
-                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ $message->message }}"><i class="fas fa-edit"></i></button>
+                                <div class="message-actions">
                                     <form action="{{ route('messenger.delete', ['messageId' => $message->id]) }}" method="POST" class="inline-form">
-                                    @csrf
+                                        @csrf
                                         @method('DELETE')
-                                    <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
-                                </form>
-                            </span>
+                                        <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ $message->message }}"><i class="fas fa-edit"></i></button>
+                                </div>
                             @endif
                         </div>
                     @endforeach

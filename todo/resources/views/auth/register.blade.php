@@ -26,21 +26,21 @@
             <div class="input-input">
                 <input type="text" class="input @error('username') is-invalid @enderror" name="username"  placeholder="Enter your username" value="{{ old('username') }}">
                 @if ($errors->has('username'))
-                    <span class="text-danger">{{ $errors->first('username') }}</span>
+                    <span class="invalid-feedback" role="alert">{{ $errors->first('username') }}</span>
                 @endif
             </div>
 
             <div class="input-input">
                 <input type="email" class="input @error('email') is-invalid @enderror" name="email"  placeholder="Enter your email" value="{{ old('email') }}">
                 @if ($errors->has('email'))
-                    <span class="text-danger">{{ $errors->first('email') }}</span>
+                    <span class="invalid-feedback" role="alert">{{ $errors->first('email') }}</span>
                 @endif
             </div>
 
             <div class="input-input">
                 <input type="password" class="input @error('password') is-invalid @enderror" name="password" placeholder="Enter your password">
                 @if ($errors->has('password'))
-                    <span class="text-danger">{{ $errors->first('password') }}</span>
+                    <span class="invalid-feedback" role="alert">{{ $errors->first('password') }}</span>
                 @endif
             </div>
 
