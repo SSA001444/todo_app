@@ -18,30 +18,43 @@
             @endif
         </div>
     </div>
-    <div class="text-center mt-5">
-        <h2>Add Todo</h2>
 
-        <form class="row g-3 justify-content-center" method="POST" action="{{ route('todos.store') }}">
-            @csrf
-            <div class="col-3">
-                <input type="text" class="form-control" name="title" placeholder="Title">
+    <section class="section-1">
+        <div class="section-1-item">
+            <div class="section-1-logo">
+                <img alt="Logo" class="section-1-img" src="{{ asset('images/todo/header/to_do_3.png') }}">
             </div>
-            <div class="col-3">
-                <input type="text" class="form-control" name="commentary" placeholder="Commentary">
-            </div>
-            <div class="col-2">
-                <select name="group_id" id="group_id" class="form-control">
-                    <option value="">Select group</option>
-                    @foreach ($groups as $group)
-                        <option value="{{ $group->id }}" name="group_id">{{ $group->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">Submit</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="container-section-1">
+            <div class="section-1-block">
+                <form method="POST" action="{{ route('todos.store') }}">
+                    @csrf
+                <div class="lop">
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" class="input-sec1-tit" name="title" placeholder="Title">
+                        </div>
+                        <div class="col-6">
+                            <label class="sec1-label">
+                                <select class="sec1-select" name="group_id" id="group_id">
+                                    <option value disabled selected>Select group</option>
+                                    @foreach ($groups as $group)
+                                        <option value="{{ $group->id }}" name="group_id">{{ $group->name }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            <button class="but-sec1" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                    <div class="sec1-com">
+                        <div class="aboba">
+                            <input class="input-sec1-com" type="text" name="commentary" placeholder="Commentary">
+                        </div>
+                    </div>
+                </form>
+
+
 
     <script>
         $(document).ready(function () {
@@ -115,11 +128,9 @@
         });
     </script>
 
-    <div class="text-center">
-        <h2>All Todos</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <table class="table table-bordered" id="sortable-table">
+        <h2 class="group-title2">All Todos</h2>
+            <div class="table-wrapper">
+                <table class="fl-table" id="sortable-table">
                     <thead>
                     <tr>
                         <th scope="col">Name</th>
@@ -150,9 +161,9 @@
                                 <input type="checkbox" class="todo-status-checkbox" data-todo-id="{{ $todo->id }}" {{ $todo->is_completed ? 'checked' : '' }}>
                             </td>
                             <td>
-                                <a href="{{ route('todos.edit', ['todo' => $todo->id]) }}" class="btn btn-info">Edit</a>
-                                <button class="btn btn-danger delete-button" data-todo-id="{{ $todo->id }}">Delete</button>
-                                <a href="{{ route('todo.share', ['todo' => $todo->id]) }}" class="btn btn-info">Share</a>
+                                <a href="{{ route('todos.edit', ['todo' => $todo->id]) }}" class="group-act-edit group-luke">Edit</a>
+                                <button class="group-act-del delete-button" data-todo-id="{{ $todo->id }}">Delete</button>
+                                <a href="{{ route('todo.share', ['todo' => $todo->id]) }}" class="group-act-edit group-luke">Share</a>
                             </td>
                             <th>{{$todo->shared_from}}</th>
                         </tr>
@@ -162,6 +173,26 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+            </div>
     </div>
+    <img src="{{ asset('images/sec1/many/1.png') }}" alt="" class="sec1-circle1 sec1-absolute">
+    <img src="{{ asset('images/sec1/many/2.png') }}" alt="" class="sec1-circle2 sec1-absolute">
+    <img src="{{ asset('images/sec1/inside/1.png') }}" alt="" class="sec1-circle3 sec1-absolute">
+    <img src="{{ asset('images/sec1/inside/2.png') }}" alt="" class="sec1-circle4 sec1-absolute">
+    <img src="{{ asset('images/sec1/inside/3.png') }}" alt="" class="sec1-circle5 sec1-absolute">
+    <img src="{{ asset('images/sec1/outside/1.png') }}" alt="" class="sec1-circle6 sec1-absolute">
+    <img src="{{ asset('images/sec1/outside/2.png') }}" alt="" class="sec1-circle7 sec1-absolute">
+    <img src="{{ asset('images/sec1/outside/3.png') }}" alt="" class="sec1-circle8 sec1-absolute">
+    <div>
+
+    </div>
+
+    </section>
+
+    <img src="{{ asset('images/todo/1.png') }}" alt="" class="bg-img bg-img1">
+    <img src="{{ asset('images/todo/2.png') }}" alt="" class="bg-img bg-img2">
+    <img src="{{ asset('images/todo/3.png') }}" alt="" class="bg-img bg-img3">
+    <img src="{{ asset('images/todo/4.png') }}" alt="" class="bg-img bg-img4">
+
+    <div class="sec13"></div>
 @endsection

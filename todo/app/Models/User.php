@@ -16,6 +16,17 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $fillable = [
+        'username',
+        'email',
+        'password',
+    ];
+
     public function todo()
     {
         return $this->BelongsToMany(Todo::class);

@@ -105,10 +105,10 @@ class LoginRegisterController extends Controller
             } else {
                 Auth::logout();
 
-                return redirect()->route('login')->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
+                return back()->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
             }
         } else {
-            return redirect()->route('login')->withErrors([ 'identity' => 'Invalid credentials. Please try again.']);
+            return back()->withErrors([ 'identity' => 'Invalid credentials. Please try again.']);
         }
     }
 

@@ -236,6 +236,7 @@
       <path value="$PROJECT_DIR$/todo/todo/vendor/symfony/polyfill-intl-idn" />
       <path value="$PROJECT_DIR$/todo/vendor/laravel/ui" />
       <path value="$PROJECT_DIR$/todo/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/todo/vendor/carbonphp/carbon-doctrine-types" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

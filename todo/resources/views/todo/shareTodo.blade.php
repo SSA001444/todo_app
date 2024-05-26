@@ -32,6 +32,10 @@
                     <input type="email" class="form-control" name="email" placeholder="Email">
                 </div>
                 <div class="mb-3">
+                    <input type="checkbox" name="share_access" id="share_access">
+                    <label for="share_access">Grant access instead of copying</label>
+                </div>
+                <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Share</button>
                 </div>
             </div>
