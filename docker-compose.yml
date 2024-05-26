@@ -1,16 +1,35 @@
+version: '3.8'
+
 services:
-  laravel-docker:
-    container_name: laravel-docker
-    build: .
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ticket_system_app
+    ports:
+      - "${APP_PORT}:9000"
     volumes:
-      - ./todo:/var/www/html
-    ports:
-      - 9000:80
+      - .:/var/www
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+    networks:
+      - app-network
 
-  mysql_db:
-    image: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
+  mysql:
+      image: mysql:8.0
+      container_name: mysql
+      ports:
+        - "3306:3306"
+      environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+      networks:
+        - app-network
 
+
+networks:
+  app-network:
+    driver: bridge
+    name: ticketsystem_app-network
