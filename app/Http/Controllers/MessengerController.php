@@ -11,13 +11,19 @@ class MessengerController extends Controller
 {
     public function index()
     {
-        $contacts = User::where('id', '!=', Auth::id())->get();
+        $contacts = User::where('id', '!=', Auth::id())
+                        ->where('team_id', Auth::user()->team_id)
+                        ->get();
+
         return view('messenger.messenger', compact('contacts'));
     }
 
     public function showDialog($userId)
     {
-        $contacts = User::where('id', '!=', Auth::id())->get();
+        $contacts = User::where('id', '!=', Auth::id())
+                        ->where('team_id', Auth::user()->team_id)
+                        ->get();
+
 
         $messages = Message::where(function ($query) use ($userId) {
             $query->where('user_id', Auth::id())
@@ -27,7 +33,9 @@ class MessengerController extends Controller
                   ->where('recipient_id', Auth::id());
         })->get();
 
-        $selectedUser = User::findOrFail($userId);
+        $selectedUser = User::where('id', $userId)
+                            ->where('team_id', Auth::user()->team_id)
+                            ->firstOrFail();
 
         return view('messenger.messenger', compact('contacts', 'messages', 'selectedUser'));
     }
@@ -71,7 +79,9 @@ class MessengerController extends Controller
             'message' => 'required|string',
         ]);
 
-        $selectedUser = User::findOrFail($userId);
+        $selectedUser = User::where('id', $userId)
+                            ->where('team_id', Auth::user()->team_id)
+                            ->firstOrFail();
         $recipient_id = $selectedUser->id;
 
         Message::create([

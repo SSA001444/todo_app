@@ -25,11 +25,17 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'team_id',
     ];
 
     public function todo()
     {
         return $this->BelongsToMany(Todo::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
     }
 
     protected $casts = [
