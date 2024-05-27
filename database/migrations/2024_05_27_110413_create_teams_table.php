@@ -16,7 +16,9 @@ class CreateTeamsTable extends Migration
 
         // Add team_id to users table
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('team_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('team_id')->nullable()->after('id');
+
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 

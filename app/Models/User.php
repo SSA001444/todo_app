@@ -14,6 +14,10 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
+    const ROLE_USER = 'user';
+    const ROLE_MODERATOR = 'moderator';
+    const ROLE_ADMIN = 'admin';
+
     protected $guarded = [];
 
     protected $hidden = [
@@ -45,5 +49,20 @@ class User extends Authenticatable
     public function hasVerifiedEmail()
     {
         return $this->is_email_verified == 1;
+    }
+
+    public function isUser()
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function isModerator()
+    {
+        return $this->role === self::ROLE_MODERATOR;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 }

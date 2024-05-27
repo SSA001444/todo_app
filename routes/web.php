@@ -34,33 +34,45 @@ Route::controller(\App\Http\Controllers\Auth\ForgotPasswordController::class)->g
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
-        Route::resource('todos', \App\Http\Controllers\TodoController::class);
-        Route::put('todos/edit/{todo}', 'update')->name('todos.update');
-        Route::get('todos/delete/{todo}', 'destroy')->name('todos.destroy');
-        Route::get('share-todo/{todo}', 'shareForm')->name('todo.share.form');
-        Route::post('share-todo/{todo}', 'share')->name('todo.share');
-        Route::get('/add-todo/{token}', 'add')->name('todo.add');
-        Route::post('todos/reorder', 'reorder')->name('todos.reorder');
-        Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
-        Route::get('/messenger', 'messenger')->name('messenger');
+
+    Route::controller(\App\Http\Controllers\TeamStatusController::class)->group(function () {
+        Route::get('/team-status', 'index')->name('team-status');
     });
 
-    Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
-        Route::resource('groups', \App\Http\Controllers\GroupController::class);
-        Route::get('/groups', 'index')->name('groups.index');
-        Route::get('groups/{group}', 'destroy')->name('groups.destroy');
-        Route::post('groups/reorder', 'reorder')->name('groups.reorder');
+    Route::controller(\App\Http\Controllers\TeamController::class)->group(function () {
+        Route::post('/teams', 'store')->name('teams.store');
     });
 
-    Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
-        Route::post('/profile/update-photo','updatePhoto')->name('profiles.update-photo');
-    });
-    Route::controller(\App\Http\Controllers\MessengerController::class)->group(function () {
-        Route::get('/messenger', 'index')->name('messenger');
-        Route::get('/messenger/{userId}', 'showDialog')->name('messenger.dialog');
-        Route::post('/messenger/{userId}/send', 'sendMessage')->name('messenger.send');
-        Route::put('/messenger/{messageId}', 'editMessage')->name('messenger.edit');
-        Route::delete('/messenger/{messageId}', 'deleteMessage')->name('messenger.delete');
+    Route::middleware(['check.team'])->group(function () {
+
+        Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
+            Route::resource('todos', \App\Http\Controllers\TodoController::class);
+            Route::put('todos/edit/{todo}', 'update')->name('todos.update');
+            Route::get('todos/delete/{todo}', 'destroy')->name('todos.destroy');
+            Route::get('share-todo/{todo}', 'shareForm')->name('todo.share.form');
+            Route::post('share-todo/{todo}', 'share')->name('todo.share');
+            Route::get('/add-todo/{token}', 'add')->name('todo.add');
+            Route::post('todos/reorder', 'reorder')->name('todos.reorder');
+            Route::post('todos/update-status', 'updateStatus')->name('todos.update-status');
+            Route::get('/messenger', 'messenger')->name('messenger');
+        });
+
+        Route::controller(\App\Http\Controllers\GroupController::class)->group(function () {
+            Route::resource('groups', \App\Http\Controllers\GroupController::class);
+            Route::get('/groups', 'index')->name('groups.index');
+            Route::get('groups/{group}', 'destroy')->name('groups.destroy');
+            Route::post('groups/reorder', 'reorder')->name('groups.reorder');
+        });
+
+        Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
+            Route::post('/profile/update-photo', 'updatePhoto')->name('profiles.update-photo');
+        });
+        Route::controller(\App\Http\Controllers\MessengerController::class)->group(function () {
+            Route::get('/messenger', 'index')->name('messenger');
+            Route::get('/messenger/{userId}', 'showDialog')->name('messenger.dialog');
+            Route::post('/messenger/{userId}/send', 'sendMessage')->name('messenger.send');
+            Route::put('/messenger/{messageId}', 'editMessage')->name('messenger.edit');
+            Route::delete('/messenger/{messageId}', 'deleteMessage')->name('messenger.delete');
+        });
     });
 });
