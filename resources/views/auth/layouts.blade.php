@@ -109,6 +109,9 @@
                             </select>
                         </label>
                     </form>
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'moderator')
+                        <a class="header-logout" href="{{route('admin.users')}}">Admin Panel</a>
+                    @endif
                     <a class="header-logout" href="{{route('todos.index')}}">Todos</a>
                     <a class="header-logout" href="{{route('groups.index')}}">Groups</a>
                 </div>

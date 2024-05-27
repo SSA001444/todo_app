@@ -45,7 +45,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['check.team'])->group(function () {
 
-        Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
+        Route::middleware(['role:admin,moderator'])->group(function () {
+            Route::controller(\App\Http\Controllers\AdminController::class)->group(function () {
+                Route::get('/admin', 'index')->name('admin.index');
+                Route::get('admin/users', 'users')->name('admin.users');
+                Route::post('admin/users/invite', 'inviteUser')->name('admin.users.invite');
+                Route::post('admin/users/{user}/role', 'updateUserRole')->name('admin.users.updateRole');
+                Route::post('admin/users/{user}/remove', 'removeUser')->name('admin.users.remove');
+            });
+        });
+
+            Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
             Route::resource('todos', \App\Http\Controllers\TodoController::class);
             Route::put('todos/edit/{todo}', 'update')->name('todos.update');
             Route::get('todos/delete/{todo}', 'destroy')->name('todos.destroy');

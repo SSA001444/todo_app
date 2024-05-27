@@ -603,16 +603,9 @@ body{
 
 
 .alert-danger {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(100%, -50%);
     background-color: #f8d7da;
     color: #721c24;
-    padding: 0.75rem;
     border: 1px solid #f5c6cb;
-    border-radius: 0.25rem;
-    z-index: 1;
 }
 
 
@@ -1161,4 +1154,29 @@ body{
 .user-info .role {
     font-size: 0.9em;
     color: black;
+}
+
+.select-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.alert-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }

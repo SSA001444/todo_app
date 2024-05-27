@@ -110,9 +110,9 @@
                         </label>
                     </form>
                     <?php if(auth()->user()->role == 'admin' || auth()->user()->role == 'moderator'): ?>
-                        <a class="header-logout" href="<?php echo e(route('admin.index')); ?>">Admin Panel</a>
+                        <a class="header-logout" href="<?php echo e(route('admin.users')); ?>">Admin Panel</a>
                     <?php endif; ?>
-                        <a class="header-logout" href="<?php echo e(route('todos.index')); ?>">Todos</a>
+                    <a class="header-logout" href="<?php echo e(route('todos.index')); ?>">Todos</a>
                     <a class="header-logout" href="<?php echo e(route('groups.index')); ?>">Groups</a>
                 </div>
             </div>
