@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -53,6 +52,17 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('admin/users/{user}/role', 'updateUserRole')->name('admin.users.updateRole');
                 Route::post('admin/users/{user}/remove', 'removeUser')->name('admin.users.remove');
             });
+        });
+
+        Route::controller(\App\Http\Controllers\TicketController::class)->group(function () {
+            Route::resource('tags', \App\Http\Controllers\TagController::class);
+            Route::resource('tickets', \App\Http\Controllers\TicketController::class);
+            Route::get('/tickets', 'index')->name('tickets.index');
+            Route::post('/tickets', 'store')->name('tickets.store');
+        });
+        Route::controller(\App\Http\Controllers\TagController::class)->group(function () {
+            Route::resource('tags', \App\Http\Controllers\TagController::class);
+            Route::get('/tags', 'index')->name('tags.index');
         });
 
             Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
