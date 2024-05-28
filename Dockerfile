@@ -1,33 +1,38 @@
-FROM php:8.1.0-apache
-WORKDIR /var/www/html
-#Mod Rewrite
-RUN a2enmod rewrite
-# Linux Library
+FROM php:8.3-fpm
+
+WORKDIR /var/www
+
 RUN apt-get update -y && apt-get install -y \
-    libicu-dev \
-    libmariadb-dev \
-    unzip zip \
-    zlib1g-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
+    build-essential \
+    libpng-dev \
     libjpeg62-turbo-dev \
-    libpng-dev
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    supervisor \
+    libonig-dev
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+COPY . /var/www
 
 
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www
 
-# Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN docker-php-ext-install gettext intl pdo_mysql gd
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN chown -R www-data:www-data /var/www/html
+EXPOSE 9000
 
-RUN find /var/www/html -type f -exec chmod 644 {} \;
-
-RUN find /var/www/html -type d -exec chmod 755 {} \;
-
-
-
+CMD ["php-fpm"]
