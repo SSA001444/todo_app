@@ -1,18 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
+    public function index()
+    {
+        return view('profile.index', ['user' => auth()->user()]);
+    }
+
+    public function update(Request $request)
+    {
+        $user = auth()->user();
+
+        $validatedData = $request->validate([
+            'username' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'current_password' => 'required_if:change_password_hidden,1',
+            'new_password' => 'nullable|confirmed|min:8|required_if:change_password_hidden,1',
+        ]);
+
+        // Update user profile details
+        $user->username = $validatedData['username'];
+        $user->email = $validatedData['email'];
+
+        // Update password if requested
+        if ($request->input('change_password_hidden') === '1') {
+            if (Hash::check($request->current_password, $user->password)) {
+                $user->password = Hash::make($request->new_password);
+            } else {
+                return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect'])->withInput();
+            }
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Profile updated successfully')->withInput();
+    }
 
     public function updatePhoto(Request $request)
     {
-        try{
+        try {
             $user = auth()->user();
 
             if ($request->hasFile('profile_photo')) {
@@ -22,15 +57,19 @@ class ProfileController extends Controller
                         unlink($filePath);
                         $user->profile_photo = null;
                         $user->save();
-                    }}
+                    }
+                }
 
                 $image = $request->file('profile_photo');
                 $imageName = 'profile_' . time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storePublicly('profile-photos', 'public');
-                Image::make(storage_path('app/public/' . $imagePath))->resize(55, 55)->save();
+                $imagePath = 'profile-photos/' . $imageName;
 
-                $imagePath = '/storage/'.$imagePath;
-                $user->profile_photo = $imagePath;
+                // Move the image to public/profile-photos/
+                $image->move(public_path('profile-photos'), $imageName);
+
+                Image::make(public_path($imagePath))->resize(55, 55)->save();
+
+                $user->profile_photo = '/' . $imagePath;
                 Log::info('Saving profile photo', ['path' => $imagePath]);
                 $user->save();
 
