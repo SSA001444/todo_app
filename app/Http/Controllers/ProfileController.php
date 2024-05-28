@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Mail\CurrentEmailChangeNotificationEmail;
+use App\Mail\EmailChangeNotificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Hash;
+use App\Models\EmailChange;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends Controller
 {
@@ -29,7 +34,23 @@ class ProfileController extends Controller
 
         // Update user profile details
         $user->username = $validatedData['username'];
-        $user->email = $validatedData['email'];
+
+        // Handle email change request
+        if ($validatedData['email'] !== $user->email) {
+            $currentEmailToken = Str::random(60);
+
+            // Create email change request
+            $emailChange = EmailChange::create([
+                'user_id' => $user->id,
+                'new_email' => $validatedData['email'],
+                'current_email_verification_token' => $currentEmailToken,
+            ]);
+
+            // Send verification email to the current email
+            Mail::to($user->email)->send(new CurrentEmailChangeNotificationEmail($user, $currentEmailToken));
+
+            return redirect()->route('profile.index')->with('success', 'Profile updated successfully. Please verify your current email address.');
+        }
 
         // Update password if requested
         if ($request->input('change_password_hidden') === '1') {
@@ -43,6 +64,44 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('profile.index')->with('success', 'Profile updated successfully')->withInput();
+    }
+
+    public function verifyCurrentEmail($token)
+    {
+        $emailChange = EmailChange::where('current_email_verification_token', $token)->first();
+
+        if (!$emailChange) {
+            return redirect()->route('profile.index')->withErrors(['email' => 'Invalid or expired email verification token.']);
+        }
+
+        // Generate token for new email verification
+        $newEmailToken = Str::random(60);
+        $emailChange->new_email_verification_token = $newEmailToken;
+        $emailChange->current_email_verification_token = null;
+        $emailChange->save();
+
+        // Send verification email to the new email
+        Mail::to($emailChange->new_email)->send(new EmailChangeNotificationEmail($emailChange->user, $newEmailToken));
+
+        return redirect()->route('profile.index')->with('success', 'Please verify your new email address.');
+    }
+
+    public function verifyNewEmail($token)
+    {
+        $emailChange = EmailChange::where('new_email_verification_token', $token)->first();
+
+        if (!$emailChange) {
+            return redirect()->route('profile.index')->withErrors(['email' => 'Invalid or expired email verification token.']);
+        }
+
+        // Update email and clear verification tokens
+        $user = $emailChange->user;
+        $user->email = $emailChange->new_email;
+        $user->save();
+
+        $emailChange->delete();
+
+        return redirect()->route('profile.index')->with('success', 'Email address updated successfully.');
     }
 
     public function updatePhoto(Request $request)

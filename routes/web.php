@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
         Route::get('/profile', 'index')->name('profile.index');
         Route::post('/profile', 'update')->name('profile.update');
+        Route::get('/profile/verify-current-email/{token}', 'verifyCurrentEmail')->name('profile.verify.current.email');
+        Route::get('/profile/verify-new-email/{token}', 'verifyNewEmail')->name('profile.verify.new.email');
         Route::post('/profile/update-photo', 'updatePhoto')->name('profiles.update-photo');
     });
 
