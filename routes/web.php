@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -55,6 +54,26 @@ Route::middleware(['auth'])->group(function () {
             });
         });
 
+        Route::controller(\App\Http\Controllers\TicketController::class)->group(function () {
+            Route::resource('tags', \App\Http\Controllers\TagController::class);
+            Route::resource('tickets', \App\Http\Controllers\TicketController::class);
+            Route::get('/tickets', 'index')->name('tickets.index');
+            Route::post('/tickets', 'store')->name('tickets.store');
+            Route::get('/tickets/{id}', 'show')->name('tickets.show');
+            Route::post('/tickets/tasks', 'storeTask')->name('tasks.store');
+            Route::post('/tickets/comments', 'storeComment')->name('comments.store');
+            Route::patch('/tickets/comments/{id}', 'updateComment')->name('comments.update');
+            Route::delete('/tickets/comments/{id}', 'destroyComment')->name('comments.destroy');
+            Route::patch('/tasks/{task}', 'updateTask')->name('tasks.update');
+            Route::patch('/tickets/{id}', 'update')->name('tickets.update');
+            Route::delete('/tickets/{id}', 'destroy')->name('tickets.destroy');
+        });
+
+        Route::controller(\App\Http\Controllers\TagController::class)->group(function () {
+            Route::resource('tags', \App\Http\Controllers\TagController::class);
+            Route::get('/tags', 'index')->name('tags.index');
+        });
+
             Route::controller(\App\Http\Controllers\TodoController::class)->group(function () {
             Route::resource('todos', \App\Http\Controllers\TodoController::class);
             Route::put('todos/edit/{todo}', 'update')->name('todos.update');
@@ -77,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
             Route::post('/profile/update-photo', 'updatePhoto')->name('profiles.update-photo');
         });
+
         Route::controller(\App\Http\Controllers\MessengerController::class)->group(function () {
             Route::get('/messenger', 'index')->name('messenger');
             Route::get('/messenger/{userId}', 'showDialog')->name('messenger.dialog');
