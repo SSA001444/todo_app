@@ -42,6 +42,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/teams', 'store')->name('teams.store');
     });
 
+    Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
+        Route::get('/profile', 'index')->name('profile.index');
+        Route::post('/profile', 'update')->name('profile.update');
+        Route::get('/profile/verify-current-email/{token}', 'verifyCurrentEmail')->name('profile.verify.current.email');
+        Route::get('/profile/verify-new-email/{token}', 'verifyNewEmail')->name('profile.verify.new.email');
+        Route::post('/profile/update-photo', 'updatePhoto')->name('profiles.update-photo');
+    });
+
     Route::middleware(['check.team'])->group(function () {
 
         Route::middleware(['role:admin,moderator'])->group(function () {
@@ -91,10 +99,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/groups', 'index')->name('groups.index');
             Route::get('groups/{group}', 'destroy')->name('groups.destroy');
             Route::post('groups/reorder', 'reorder')->name('groups.reorder');
-        });
-
-        Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
-            Route::post('/profile/update-photo', 'updatePhoto')->name('profiles.update-photo');
         });
 
         Route::controller(\App\Http\Controllers\MessengerController::class)->group(function () {

@@ -98,6 +98,7 @@
                         <span class="username">{{ auth()->user()->username }}</span>
                         <span class="role">{{ ucfirst(auth()->user()->role) }}</span>
                     </div>
+                    <a class="header-logout" href="{{ route('profile.index') }}">Profile</a>
                     <a class="header-logout" href="{{ route('logout') }}">Logout</a>
                 </div>
                 <div class="header-butt">
@@ -112,8 +113,8 @@
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'moderator')
                         <a class="header-logout" href="{{route('admin.users')}}">Admin Panel</a>
                     @endif
-                    <a class="header-logout" href="{{route('todos.index')}}">Todos</a>
-                    <a class="header-logout" href="{{route('groups.index')}}">Groups</a>
+                    <a class="header-logout" href="{{route('tickets.index')}}">Tickets</a>
+                    <a class="header-logout" href="{{route('tags.index')}}">Tags</a>
                 </div>
             </div>
         @endguest
