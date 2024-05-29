@@ -39,6 +39,16 @@
             margin-right: 0;
         }
 
+        .header-center-img {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .header-center-img img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
     </style>
 </head>
 <body>
@@ -101,6 +111,9 @@
                     <a class="header-logout" href="{{ route('profile.index') }}">Profile</a>
                     <a class="header-logout" href="{{ route('logout') }}">Logout</a>
                 </div>
+                <a href="{{ route('team-status') }}" class="header-center-img">
+                    <img src="{{ asset('images/todo/header/4.png') }}" alt="Main Page">
+                </a>
                 <div class="header-butt">
                     <form class="header-form">
                         <label>
