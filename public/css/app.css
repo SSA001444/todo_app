@@ -1191,6 +1191,7 @@ body{
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(27, 31, 35, 0.12);
+
 }
 
 .ticket-title {
@@ -1256,7 +1257,9 @@ body{
 .ticket-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .ticket-id {
@@ -1265,6 +1268,7 @@ body{
 }
 
 .ticket-user {
+    display: block;
     font-size: 20px;
     font-weight: bold;
     color: #0366d6;
@@ -1418,7 +1422,24 @@ body{
     margin-right: 10px;
 }
 
+.delete-ticket-btn {
+    background-color: #f01d31;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    margin-top:25px;
+}
 
+.delete-ticket-btn:hover {
+    background-color: #d73a49;
+}
 
 /* Tags Page */
 .tags-container {
@@ -1572,4 +1593,244 @@ body{
     display: flex;
     justify-content: center;
     gap: 10px;
+}
+
+/* ticket details page */
+
+.ticket-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(27, 31, 35, 0.12);
+}
+
+.ticket-details {
+    padding: 20px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.ticket-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.ticket-description {
+    color: #586069;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 20px;
+}
+
+.ticket-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #586069;
+    margin-bottom: 20px;
+}
+
+.ticket-status {
+    font-weight: bold;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.badge-primary {
+    background-color: #007bff;
+}
+
+.tasks-container, .comments-container {
+    margin-top: 20px;
+}
+
+.tasks-container ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.tasks-container li {
+    padding: 5px 0;
+}
+
+.tasks-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.task-input, .comment-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: #1D9BF0;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0f3752;
+}
+
+.comment {
+    border-top: 1px solid #e1e4e8;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.tasks-h3 {
+    margin-bottom:35px;
+}
+
+/* comments style */
+
+.comments-container {
+    margin-top: 20px;
+}
+
+.comment-block {
+    position: relative;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.comment-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.comment-text {
+    margin-bottom: 10px;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #586069;
+}
+
+.comment-form {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #e1e4e8;
+}
+
+.comment-photo {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-photo-input {
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.comment-form .btn-primary {
+    align-self: flex-start;
+    padding: 10px 20px;
+    background-color: #1D9BF0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.comment-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.edit-comment-btn, .delete-comment-btn {
+    background-color: #1D9BF0;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-comment-btn:hover, .delete-comment-btn:hover {
+    background-color: #0f3752;
+}
+
+/* modal task */
+.modal-task {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content-task {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close-task {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-task:hover,
+.close-task:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.add-task-button {
+    float: right;
+    margin-top: 0;
+    margin-right: 20px;
 }
