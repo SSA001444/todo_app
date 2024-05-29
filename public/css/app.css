@@ -1035,20 +1035,6 @@ body{
     left: 1500px;
 }
 
-.no-team-container {
-    text-align: center;
-    background-color: #f0f4f8;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-
-.no-team-header {
-    font-size: 24px;
-    color: #333;
-}
-
 .create-team-btn {
     background-color: #1D9BF0;
     color: white;
@@ -1182,8 +1168,6 @@ body{
 
 /* Ticket page */
 
-/* Existing styles remain unchanged */
-
 .container-ticket {
     max-width: 1200px;
     margin: 0 auto;
@@ -1191,6 +1175,7 @@ body{
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(27, 31, 35, 0.12);
+
 }
 
 .ticket-title {
@@ -1256,7 +1241,9 @@ body{
 .ticket-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .ticket-id {
@@ -1265,6 +1252,7 @@ body{
 }
 
 .ticket-user {
+    display: block;
     font-size: 20px;
     font-weight: bold;
     color: #0366d6;
@@ -1418,7 +1406,24 @@ body{
     margin-right: 10px;
 }
 
+.delete-ticket-btn {
+    background-color: #f01d31;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    margin-top:25px;
+}
 
+.delete-ticket-btn:hover {
+    background-color: #d73a49;
+}
 
 /* Tags Page */
 .tags-container {
@@ -1896,4 +1901,80 @@ body{
     float: right;
     margin-top: 0;
     margin-right: 20px;
+}
+
+/* team statistic */
+
+.team-status {
+    text-align: center;
+}
+
+.team-status-header {
+    font-size: 32px;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.team-statistics {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1 1 calc(33.333% - 20px);
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 300px;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.stat-item h2 {
+    font-size: 20px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.stat-item p {
+    font-size: 18px;
+    color: #555;
+}
+
+.no-team-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+.no-team-header {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
 }

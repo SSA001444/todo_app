@@ -19,4 +19,14 @@ class Team extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
 }

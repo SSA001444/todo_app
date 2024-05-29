@@ -35,7 +35,7 @@ Route::controller(\App\Http\Controllers\Auth\ForgotPasswordController::class)->g
 Route::middleware(['auth'])->group(function () {
 
     Route::controller(\App\Http\Controllers\TeamStatusController::class)->group(function () {
-        Route::get('/team-status', 'index')->name('team-status');
+        Route::get('/team-status', 'showTeamStatus')->name('team-status');
     });
 
     Route::controller(\App\Http\Controllers\TeamController::class)->group(function () {
