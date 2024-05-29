@@ -48,13 +48,17 @@
 
             <div class="ticket-list">
                 @foreach($tickets as $ticket)
+                    @if(!($ticket->trashed()))
                     <div class="ticket-item">
                         <div class="ticket-header">
                             <span class="ticket-id">#{{ $ticket->team_ticket_id }}</span>
                             <span class="ticket-user">Author: {{ $ticket->user->username }}</span>
+                            @if($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')
+                                <button class="delete-ticket-btn" data-id="{{ $ticket->id }}">Delete</button>
+                            @endif
                         </div>
                         <div class="ticket-body">
-                            <span class="ticket-title">{{ $ticket->title }}</span>
+                            <a href="{{ route('tickets.show', $ticket->id) }}" class="ticket-title">{{ $ticket->title }}</a>
                             <p class="ticket-description">{{ $ticket->description }}</p>
                             <div class="ticket-meta">
                                 <span class="ticket-status {{ $ticket->status }}">{{ ucfirst($ticket->status) }}</span>
@@ -64,11 +68,11 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 @endforeach
             </div>
         </div>
     </section>
-
     <!-- The Modal -->
     <div id="createTicketModal" class="modal-ticket">
         <div class="modal-content-ticket">
@@ -92,12 +96,27 @@
             </form>
         </div>
     </div>
+    <!-- Delete Ticket Modal -->
+    <div id="deleteTicketModal" class="modal-ticket">
+        <div class="modal-content-ticket">
+            <span class="close-ticket" id="close_delete_ticket">&times;</span>
+            <h2>Delete Ticket</h2>
+            <form id="deleteTicketForm" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <input name="reason" id="delete-ticket-reason" class="ticket-input" placeholder="Reason for deletion" required>
+                <button type="submit" class="ticket-submit">Delete Ticket</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         $(document).ready(function() {
             var modal = $('#createTicketModal');
             var btn = $('#createTicketBtn');
             var span = $('.close-ticket');
+            var deleteTicketModal = $('#deleteTicketModal');
+            var deleteSpan = $('#close_delete_ticket');
 
             btn.on('click', function() {
                 modal.show();
@@ -110,6 +129,22 @@
             $(window).on('click', function(event) {
                 if ($(event.target).is(modal)) {
                     modal.hide();
+                }
+            });
+
+            $('.delete-ticket-btn').on('click', function() {
+                const ticketId = $(this).data('id');
+                $('#deleteTicketForm').attr('action', `/tickets/${ticketId}`);
+                deleteTicketModal.show();
+            });
+
+            deleteSpan.on('click', function() {
+                deleteTicketModal.hide();
+            });
+
+            $(window).on('click', function(event) {
+                if ($(event.target).is(deleteTicketModal)) {
+                    deleteTicketModal.hide();
                 }
             });
 
