@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Auth;
 
 class TagController extends Controller
 {
@@ -17,13 +18,21 @@ class TagController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        if (Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') {
 
-        Tag::create($request->all());
+            $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
 
-        return redirect()->route('tags.index')->with('success', 'Tag created successfully.');
+            Tag::create([
+                'name' => $request->name,
+                'team_id' => Auth::user()->team_id
+            ]);
+
+            return redirect()->route('tags.index')->with('success', 'Tag created successfully.');
+        } else {
+            return back()->with('error', 'You are not authorized to create new tag');
+        }
     }
 
     public function edit($id)
@@ -45,6 +54,8 @@ class TagController extends Controller
             return redirect()->route('tags.index')->with('error', 'Tag not found');
         }
 
+        if (($tag->team_id == Auth::user()->team_id) && (Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')) {
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -52,18 +63,28 @@ class TagController extends Controller
         $tag->update($request->all());
 
         return redirect()->route('tags.index')->with('success', 'Tag updated successfully.');
+        } else {
+            return redirect()->route('tags.index')->with('error', 'Tag not found');
+        }
     }
 
     public function destroy($id)
     {
         $tag = Tag::find($id);
-
+        $user = Auth::user();
         if (!$tag) {
             return redirect()->route('tags.index')->with('error', 'Tag not found');
         }
 
-        $tag->delete();
+        if (($tag->team_id == $user->team_id) && ($user->role == 'moderator' || $user->role == 'admin') ) {
 
-        return redirect()->route('tags.index')->with('success', 'Tag deleted successfully.');
+            $tag->deleted_by = $user->username;
+            $tag->deleted_at = now();
+            $tag->save();
+
+            return redirect()->route('tags.index')->with('success', 'Tag deleted successfully.');
+        } else {
+            return redirect()->route('tags.index')->with('error', 'Tag not found');
+        }
     }
 }

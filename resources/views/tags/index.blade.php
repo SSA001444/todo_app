@@ -30,15 +30,15 @@
             <div class="groups-sec">
                 <div class="groups-item">
                     <div class="groups-center">
+                        @if(Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')
                         <h2 class="group-title">Add Tag</h2>
                         <form action="{{ route('tags.store') }}" method="POST" class="group-form">
                             @csrf
                             <input type="text" name="name" class="group-select" placeholder="Title tag">
                             <button class="but-group" type="submit">Submit</button>
                         </form>
-
+                        @endif
                         <h2 class="group-title2">All Tags</h2>
-
                         <div class="table-wrapper">
                             <table class="fl-table" id="sortable-table">
                                 <thead>
@@ -52,20 +52,24 @@
                                 <tbody>
                                 @php $counter=1 @endphp
                                 @foreach ($tags as $tag)
+                                    @if($tag->team_id == Auth::user()->team_id)
                                     <tr>
                                         <td>{{ $counter }}</td>
                                         <td>{{ $tag->name }}</td>
                                         <td>{{ $tag->created_at }}</td>
                                         <td class="actions-container">
+                                            @if(($tag->team_id == Auth::user()->team_id) && (Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') )
                                             <button class="tag-edit-btn tag-action-edit" data-id="{{ $tag->id }}">Edit</button>
                                             <form action="{{ route('tags.destroy', ['tag' => $tag->id]) }}" method="POST" class="d-inline delete-tag-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="tag-action-del" onclick="confirmDelete(this)">Delete</button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                     @php $counter++; @endphp
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>
@@ -75,11 +79,10 @@
             </div>
         </div>
     </section>
-
     <!-- The Modal -->
-    <div id="editTagModal" class="modal-tag">
-        <div class="modal-content-tag">
-            <span class="close-tag">&times;</span>
+    <div id="editTagModal" class="modal-ticket">
+        <div class="modal-content-ticket">
+            <span class="close-ticket">&times;</span>
             <h2 class="group-title">Edit Tag</h2>
             <form id="editTagForm" method="POST">
                 @csrf
@@ -94,7 +97,7 @@
     <script>
         $(document).ready(function() {
             var modal = $('#editTagModal');
-            var span = $('.close-tag');
+            var span = $('.close-ticket');
 
             span.on('click', function() {
                 modal.hide();
