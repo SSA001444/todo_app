@@ -48,12 +48,12 @@
 
             <div class="ticket-list">
                 @foreach($tickets as $ticket)
-                    @if(!($ticket->trashed()))
+                    @if(!($ticket->trashed()) && $ticket->team_id == Auth::user()->team_id)
                     <div class="ticket-item">
                         <div class="ticket-header">
                             <span class="ticket-id">#{{ $ticket->team_ticket_id }}</span>
                             <span class="ticket-user">Author: {{ $ticket->user->username }}</span>
-                            @if($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')
+                            @if( ( $ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin' ) && $ticket->team_id == Auth::user()->team_id )
                                 <button class="delete-ticket-btn" data-id="{{ $ticket->id }}">Delete</button>
                             @endif
                         </div>

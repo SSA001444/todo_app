@@ -25,6 +25,11 @@ class Team extends Model
         return $this->hasMany(Ticket::class);
     }
 
+    public function Tag()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');

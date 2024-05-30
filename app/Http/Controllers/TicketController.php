@@ -107,7 +107,8 @@ class TicketController extends Controller
 
         $comment = Comment::findOrFail($id);
 
-        if ($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') {
+        if (($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $comment->ticket->team_id == Auth::user()->team_id )
+        {
             $comment->text = $request->comment;
             $comment->save();
 
@@ -126,7 +127,8 @@ class TicketController extends Controller
         $comment = Comment::findOrFail($id);
         $user = Auth::user();
 
-        if ($comment->user_id == Auth::id() || $user->role == 'moderator' || $user->role == 'admin') {
+        if (($comment->user_id == Auth::id() || $user->role == 'moderator' || $user->role == 'admin') && $comment->ticket->team_id == $user->team_id )
+        {
             $comment->deleted_by = $user->username;
             $comment->deleted_by_role = $user->role;
             $comment->deletion_reason = $request->reason;
@@ -167,7 +169,8 @@ class TicketController extends Controller
         $ticket = Ticket::findOrFail($id);
         $user = Auth::user();
 
-        if ($ticket->user_id == Auth::id() || $user->role == 'moderator' || $user->role == 'admin') {
+        if (($ticket->user_id == Auth::id() || $user->role == 'moderator' || $user->role == 'admin') && $ticket->team_id == $user->team_id )
+        {
             $ticket->deleted_by = $user->username;
             $ticket->deleted_by_role = $user->role;
             $ticket->deletion_reason = $request->reason;
@@ -189,15 +192,14 @@ class TicketController extends Controller
 
         $ticket = Ticket::findOrFail($id);
 
-        if ($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') {
+        if (($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id )
+        {
             $ticket->title = $request->title;
             $ticket->description = $request->description;
             $ticket->save();
 
             return back()->with('success', 'Ticket updated successfully');
         }
-
         return back()->with('error', 'You are not authorized to update this ticket');
     }
-
 }

@@ -1,6 +1,7 @@
 @extends('auth.layouts')
 
 @section('content')
+    @if($ticket->team_id == Auth::user()->team_id)
     <div class="ticket-container">
         <div class="ticket-details">
             <h2 class="ticket-title">{{ $ticket->title }}</h2>
@@ -11,7 +12,7 @@
                     <span class="badge badge-primary">{{ $tag->name }}</span>
                 @endforeach
             </div>
-            @if($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')
+            @if(($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id)
                 <button id="editTicketBtn" class="btn btn-primary">Edit Ticket</button>
             @endif
         </div>
@@ -40,7 +41,7 @@
                             <img src="{{ asset($comment->photo) }}" alt="Comment Photo" class="comment-photo">
                         @endif
                         <div class="comment-actions">
-                            @if($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')
+                            @if(($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id )
                                 <button class="edit-comment-btn" data-id="{{ $comment->id }}">Edit</button>
                                 <button class="delete-comment-btn" data-id="{{ $comment->id }}">Delete</button>
                             @endif
@@ -69,7 +70,7 @@
                 @csrf
                 @method('PATCH')
                 <span></span>
-                <input name="title" class="task-input" id="edit-ticket-title" required><
+                <input name="title" class="task-input" id="edit-ticket-title" required>
                 <textarea name="description" class="task-input" id="edit-ticket-description" required></textarea>
                 <button type="submit" class="btn btn-primary">Update Ticket</button>
             </form>
@@ -115,7 +116,7 @@
             </form>
         </div>
     </div>
-
+    @endif
     <script>
         $(document).ready(function() {
             var taskModal = $('#addTaskModal');
