@@ -22,7 +22,7 @@
             <div class="groups-item2">
                 <div class="section-1-item">
                     <div class="section-1-logo">
-                        <img alt="Logo" class="section-1-img" src="{{ asset('images/todo/header/to_do_3.png') }}">
+                        <img alt="Logo" class="section-1-img" src="{{ asset('images/logo_wbg.png') }}">
                     </div>
                 </div>
             </div>
@@ -80,9 +80,9 @@
         </div>
     </section>
     <!-- The Modal -->
-    <div id="editTagModal" class="modal-ticket">
-        <div class="modal-content-ticket">
-            <span class="close-ticket">&times;</span>
+    <div id="editTagModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
             <h2 class="group-title">Edit Tag</h2>
             <form id="editTagForm" method="POST">
                 @csrf
@@ -94,10 +94,15 @@
         </div>
     </div>
 
+        <img src="{{ asset('images/background/bg_1.png') }}" alt="bg1" class="bg-img bg-img1">
+        <img src="{{ asset('images/background/bg_2.png') }}" alt="" class="bg-img bg-img2">
+        <img src="{{ asset('images/background/bg_3.png') }}" alt="" class="bg-img bg-img3">
+        <img src="{{ asset('images/background/bg_4.png') }}" alt="" class="bg-img bg-img4">
+
     <script>
         $(document).ready(function() {
             var modal = $('#editTagModal');
-            var span = $('.close-ticket');
+            var span = $('.close');
 
             span.on('click', function() {
                 modal.hide();

@@ -21,7 +21,7 @@
         <section class="team-status">
             <div class="section-1-item">
                 <div class="section-1-logo">
-                    <img alt="Logo" class="section-1-img" src="{{ asset('images/todo/header/to_do_3.png') }}">
+                    <img alt="Logo" class="section-1-img" src="{{ asset('images/logo_wbg.png') }}">
                 </div>
             </div>
 
@@ -68,9 +68,9 @@
     @endif
 
     <!-- Modal for creating team -->
-    <div id="createTeamModal" class="modal-team">
-        <div class="modal-content-team">
-            <span class="close-team">&times;</span>
+    <div id="createTeamModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
             <h2>Create a New Team</h2>
             <form id="createTeamForm" action="{{ route('teams.store') }}" method="POST">
                 @csrf
@@ -85,7 +85,7 @@
         $(document).ready(function() {
             var modal = $('#createTeamModal');
             var btn = $('#createTeamBtn');
-            var span = $('.close-team');
+            var span = $('.close');
 
             btn.on('click', function() {
                 modal.show();
