@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatContact;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -34,6 +35,12 @@ class AdminController extends Controller
             if ($user->team_id) {
                 return redirect()->route('admin.users')->withErrors(['User is already in a team.']);
             }
+
+            //Create a chat
+            ChatContact::create([
+                'team_id' => Auth::user()->team_id,
+                'name' => $user->username
+            ]);
 
             $user->team_id = Auth::user()->team_id;
             $user->save();
@@ -73,6 +80,11 @@ class AdminController extends Controller
         if ($user->id == Auth::user()->id) {
             return redirect()->route('admin.users')->withErrors(['You cannot remove yourself.']);
         }
+
+        $chat = ChatContact::where('name', $user->username)->first();
+
+        $chat->team_id = null;
+        $chat->save();
 
         $user->team_id = null;
         $user->role = 'user';

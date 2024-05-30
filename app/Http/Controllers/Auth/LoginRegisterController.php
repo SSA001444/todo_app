@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\ChatContact;
 use App\Models\User;
 use App\Models\UserVerify;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class LoginRegisterController extends Controller
            'user_id' => $createUser->id,
            'token' => $token,
         ]);
+
         // Email sending site for verification
         Mail::send('email.verificationEmail', ['token' => $token], function($message) use($request) {
            $message->to($request->email);

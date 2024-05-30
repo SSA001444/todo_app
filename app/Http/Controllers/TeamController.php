@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\ChatContact;
 
 class TeamController extends Controller
 {
@@ -25,6 +26,11 @@ class TeamController extends Controller
 
         $team = Team::create([
             'name' => $request->teamName,
+        ]);
+
+        ChatContact::create([
+            'team_id' => $team->id,
+            'name' => $team->name . ' Chat'
         ]);
 
         $user->team_id = $team->id;

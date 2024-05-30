@@ -32,6 +32,11 @@ class Team extends Model
 
     public function admin()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function chatContact()
+    {
+        return $this->belongsTo(ChatContact::class);
     }
 }
