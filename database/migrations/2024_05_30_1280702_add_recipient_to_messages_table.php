@@ -16,7 +16,7 @@ class AddRecipientToMessagesTable extends Migration
         Schema::table('messages', function (Blueprint $table) {
             $table->unsignedBigInteger('recipient_id')->after('user_id');
 
-            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('recipient_id')->references('id')->on('chat_contacts')->onDelete('cascade');
         });
     }
 

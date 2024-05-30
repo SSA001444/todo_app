@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\ChatContact;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -11,40 +13,36 @@ class MessengerController extends Controller
 {
     public function index()
     {
-        $contacts = User::where('id', '!=', Auth::id())
-                        ->where('team_id', Auth::user()->team_id)
-                        ->get();
+        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->get();
 
-        return view('messenger.messenger', compact('contacts'));
+        return view('messenger.messenger', compact( 'chatContacts'));
     }
 
-    public function showDialog($userId)
+    public function showDialog($contactId)
     {
-        $contacts = User::where('id', '!=', Auth::id())
-                        ->where('team_id', Auth::user()->team_id)
-                        ->get();
+        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->get();
 
+        $selectedChatContact = ChatContact::where('id', $contactId)
+                                          ->where('team_id', Auth::user()->team_id)
+                                          ->first();
 
-        $messages = Message::where(function ($query) use ($userId) {
-            $query->where('user_id', Auth::id())
-                  ->where('recipient_id', $userId);
-        })->orWhere(function ($query) use ($userId) {
-            $query->where('user_id', $userId)
-                  ->where('recipient_id', Auth::id());
+        $messages = Message::where(function ($query) use ($contactId) {
+            $query->where('recipient_id', $contactId);
         })->get();
 
-        $selectedUser = User::where('id', $userId)
-                            ->where('team_id', Auth::user()->team_id)
-                            ->firstOrFail();
 
-        return view('messenger.messenger', compact('contacts', 'messages', 'selectedUser'));
+        if($selectedChatContact) {
+            return view('messenger.messenger', compact( 'chatContacts', 'messages', 'selectedChatContact'));
+        } else {
+            return redirect()->back()->with('error', 'You cant see this chat.');
+        }
     }
 
     public function deleteMessage($messageId)
     {
         $message = Message::findOrFail($messageId);
 
-        if ($message->user_id !== Auth::id()) {
+        if ($message->user_id !== Auth::id() && !(Auth::user()->role == 'admin')) {
             return redirect()->back()->with('error', 'You can only delete your own messages.');
         }
 
@@ -73,23 +71,26 @@ class MessengerController extends Controller
         return redirect()->back()->with('success', 'Message edited successfully.');
     }
 
-    public function sendMessage(Request $request, $userId)
+    public function sendMessage(Request $request, $contactId)
     {
         $request->validate([
             'message' => 'required|string',
         ]);
 
-        $selectedUser = User::where('id', $userId)
-                            ->where('team_id', Auth::user()->team_id)
-                            ->firstOrFail();
-        $recipient_id = $selectedUser->id;
+        $selectedChatContact = ChatContact::where('id', $contactId)
+                                          ->where('team_id', Auth::user()->team_id)
+                                          ->first();
 
         Message::create([
             'user_id' => Auth::id(),
-            'recipient_id' => $recipient_id,
+            'recipient_id' => $contactId,
             'message' => $request->message,
         ]);
 
-        return redirect()->route('messenger.dialog', ['userId' => $userId]);
+        if($selectedChatContact) {
+            return redirect()->route('messenger.dialog', ['contactId' => $contactId]);
+        } else {
+            return redirect()->back()->with('error', 'You cant send to this chat.');
+        }
     }
 }

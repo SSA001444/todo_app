@@ -7,13 +7,13 @@
                 Contacts
             </div>
             <div class="contacts">
-                @foreach($contacts as $contact)
+                @foreach($chatContacts as $chatContact)
                     <div class="contact-item">
                         <div class="contact-avatar">
-                            <img src="{{ $contact->profile_photo ? asset($contact->profile_photo) : 'https://via.placeholder.com/40' }}" alt="{{ $contact->username }}" class="contact-avatar-img">
+                            <img src="https://via.placeholder.com/40" alt="{{ $chatContact->name }}" class="contact-avatar-img">
                         </div>
                         <div class="contact-name">
-                            <a href="{{ route('messenger.dialog', ['userId' => $contact->id]) }}">{{ $contact->username }}</a>
+                            <a href="{{ route('messenger.dialog', ['contactId' => $chatContact->id]) }}">{{ $chatContact->name }}</a>
                         </div>
                     </div>
                 @endforeach
@@ -23,6 +23,8 @@
             <div class="chat-header">
                 @isset($selectedUser)
                     Chat with {{ $selectedUser->username }}
+                @elseif(isset($selectedChatContact))
+                    Chat with {{ $selectedChatContact->name }}
                 @else
                     Select a contact to start chatting
                 @endisset
@@ -40,14 +42,16 @@
                             <div class="sent-label">
                                 sent {{ $message->created_at->addHours(3)->format('H:i') }}
                             </div>
-                            @if($message->user_id == Auth::id())
+                            @if($message->user_id == Auth::id() || (Auth::user()->role == 'admin'))
                                 <div class="message-actions">
                                     <form action="{{ route('messenger.delete', ['messageId' => $message->id]) }}" method="POST" class="inline-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
                                     </form>
+                                    @if($message->user_id == Auth::id())
                                     <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ $message->message }}"><i class="fas fa-edit"></i></button>
+                                    @endif
                                 </div>
                             @endif
                         </div>
@@ -58,7 +62,15 @@
             </div>
             @isset($selectedUser)
                 <div class="message-input-container">
-                    <form action="{{ route('messenger.send', ['userId' => $selectedUser->id]) }}" method="POST" class="d-flex w-100">
+                    <form action="{{ route('messenger.send', ['contactId' => $selectedUser->id]) }}" method="POST" class="d-flex w-100">
+                        @csrf
+                        <input type="text" name="message" class="message-input" placeholder="Type a message">
+                        <button type="submit" class="send-button">Send</button>
+                    </form>
+                </div>
+            @elseif(isset($selectedChatContact))
+                <div class="message-input-container">
+                    <form action="{{ route('messenger.send', ['contactId' => $selectedChatContact->id]) }}" method="POST" class="d-flex w-100">
                         @csrf
                         <input type="text" name="message" class="message-input" placeholder="Type a message">
                         <button type="submit" class="send-button">Send</button>
