@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
 
 class AdminController extends Controller
 {
@@ -27,9 +28,15 @@ class AdminController extends Controller
             'identifier' => 'required|string|max:255',
         ]);
 
-        $user = User::where('email', $request->identifier)
-            ->orWhere('username', $request->identifier)
-            ->first();
+        $identifier = $request->input('identifier');
+
+        $users = User::all();
+
+        $user = $users->first(function ($user) use ($identifier) {
+                $decryptedEmail = Crypt::decryptString($user->email);
+                $decryptedUsername = Crypt::decryptString($user->username);
+                return $decryptedEmail === $identifier || $decryptedUsername === $identifier;
+        });
 
         if ($user) {
             if ($user->team_id) {
@@ -39,7 +46,7 @@ class AdminController extends Controller
             //Create a chat
             ChatContact::create([
                 'team_id' => Auth::user()->team_id,
-                'name' => $user->username
+                'name' => $user->username,
             ]);
 
             $user->team_id = Auth::user()->team_id;
@@ -81,7 +88,7 @@ class AdminController extends Controller
             return redirect()->route('admin.users')->withErrors(['You cannot remove yourself.']);
         }
 
-        $chat = ChatContact::where('name', $user->username)->first();
+        $chat = ChatContact::where('name', Crypt::decryptString($user->username))->first();
 
         $chat->team_id = null;
         $chat->save();
