@@ -22,7 +22,6 @@
     <section class="tickets">
         <div class="container-ticket">
             <h2 class="ticket-title">Tickets</h2>
-
             <div class="filter-bar">
                 <div class="filter-item">
                     <label for="filter-status">Status:</label>
@@ -73,10 +72,10 @@
             </div>
         </div>
     </section>
-    <!-- The Modal -->
-    <div id="createTicketModal" class="modal-ticket">
-        <div class="modal-content-ticket">
-            <span class="close-ticket">&times;</span>
+    <!-- Create Ticket Modal -->
+    <div id="createTicketModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
             <h2 class="ticket-title">Create Ticket</h2>
             <form action="{{ route('tickets.store') }}" method="POST">
                 @csrf
@@ -85,10 +84,12 @@
                 <label for="ticket-tags">Tags:</label>
                 <div id="ticket-tags">
                     @foreach($tags as $tag)
+                        @if($tag->team_id == Auth::user()->team_id)
                         <div class="checkbox-wrapper">
                             <input type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}">
                             <label for="tag-{{ $tag->id }}">{{ $tag->name }}</label>
                         </div>
+                        @endif
                     @endforeach
                 </div>
                 <input type="hidden" name="team_id" value="{{ auth()->user()->team_id }}">
@@ -97,9 +98,9 @@
         </div>
     </div>
     <!-- Delete Ticket Modal -->
-    <div id="deleteTicketModal" class="modal-ticket">
-        <div class="modal-content-ticket">
-            <span class="close-ticket" id="close_delete_ticket">&times;</span>
+    <div id="deleteTicketModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close_delete_ticket">&times;</span>
             <h2>Delete Ticket</h2>
             <form id="deleteTicketForm" method="POST" action="">
                 @csrf
@@ -110,11 +111,12 @@
         </div>
     </div>
 
+
     <script>
         $(document).ready(function() {
             var modal = $('#createTicketModal');
             var btn = $('#createTicketBtn');
-            var span = $('.close-ticket');
+            var span = $('.close');
             var deleteTicketModal = $('#deleteTicketModal');
             var deleteSpan = $('#close_delete_ticket');
 

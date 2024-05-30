@@ -95,24 +95,24 @@
                         <label for="profile-photo-input" class="header-php">
                             @php
                                 $userPhoto = auth()->user()->profile_photo;
-                                $defaultPhoto = asset('images/auth/login/2.png');
+                                $defaultPhoto = asset('images/header/profile_photo_default.png');
                                 $photoPath = $userPhoto && file_exists(public_path($userPhoto)) ? asset($userPhoto) : asset($defaultPhoto);
                             @endphp
                             <img src="{{$photoPath}}" alt="Profile Photo" class="header-img-php">
                             <div class="overlay"></div>
                             <input type="file" name="profile_photo" id="profile-photo-input" style="display: none;">
-                            <img src="{{ asset('images/todo/header/12312.png') }}" alt="Profile Photo" class="header-hover-img">
+                            <img src="{{ asset('images/header/edit_profile_photo.png') }}" alt="Profile Photo" class="header-hover-img">
                         </label>
                     </div>
                     <div class="user-info">
                         <span class="username">{{ auth()->user()->username }}</span>
                         <span class="role">{{ ucfirst(auth()->user()->role) }}</span>
                     </div>
-                    <a class="header-logout" href="{{ route('profile.index') }}">Profile</a>
-                    <a class="header-logout" href="{{ route('logout') }}">Logout</a>
+                    <a class="header-button" href="{{ route('profile.index') }}">Profile</a>
+                    <a class="header-button" href="{{ route('logout') }}">Logout</a>
                 </div>
                 <a href="{{ route('team-status') }}" class="header-center-img">
-                    <img src="{{ asset('images/todo/header/4.png') }}" alt="Main Page">
+                    <img src="{{ asset('images/header/bird_wbg.png') }}" alt="Main Page">
                 </a>
                 <div class="header-butt">
                     <form class="header-form">
@@ -124,10 +124,10 @@
                         </label>
                     </form>
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'moderator')
-                        <a class="header-logout" href="{{route('admin.users')}}">Admin Panel</a>
+                        <a class="header-button" href="{{route('admin.users')}}">Admin Panel</a>
                     @endif
-                    <a class="header-logout" href="{{route('tickets.index')}}">Tickets</a>
-                    <a class="header-logout" href="{{route('tags.index')}}">Tags</a>
+                    <a class="header-button" href="{{route('tickets.index')}}">Tickets</a>
+                    <a class="header-button" href="{{route('tags.index')}}">Tags</a>
                 </div>
             </div>
         @endguest
