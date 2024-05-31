@@ -126,6 +126,7 @@
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'moderator')
                         <a class="header-button" href="{{route('admin.users')}}">Admin Panel</a>
                     @endif
+                    <a class="header-button" href="{{route('messenger.index')}}">Messenger</a>
                     <a class="header-button" href="{{route('tickets.index')}}">Tickets</a>
                     <a class="header-button" href="{{route('tags.index')}}">Tags</a>
                 </div>

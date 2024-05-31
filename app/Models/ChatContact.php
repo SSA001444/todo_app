@@ -21,4 +21,8 @@ class ChatContact extends Model
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, );
+    }
 }

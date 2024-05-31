@@ -33,8 +33,10 @@
                 @isset($messages)
                     @foreach($messages as $message)
                         <div class="message {{ $message->user_id == Auth::id() ? 'sent' : 'received' }}">
-                            <strong>{{ Crypt::decryptString($message->user->username) }}:</strong> {{ $message->message }}
-                            @if($message->edited)
+                            <div class="message-text">
+                                <strong>{{ Crypt::decryptString($message->user->username) }}:</strong> {{ Crypt::decryptString($message->message) }}
+                            </div>
+                        @if($message->edited)
                                 <div class="edited-label">
                                     edited {{ $message->updated_at->addHours(3)->format('H:i') }}
                                 </div>
@@ -50,7 +52,7 @@
                                         <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                     @if($message->user_id == Auth::id())
-                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ $message->message }}"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ Crypt::decryptString($message->message) }}"><i class="fas fa-edit"></i></button>
                                     @endif
                                 </div>
                             @endif
