@@ -43,13 +43,14 @@ class AdminController extends Controller
                 return redirect()->route('admin.users')->withErrors(['User is already in a team.']);
             }
 
-            //Create a chat
-            ChatContact::create([
-                'team_id' => Auth::user()->team_id,
-                'name' => $user->username,
-            ]);
+            //Create a chat ( not working due fatal error )
+//            $chat = ChatContact::create([
+//                'team_id' => Auth::user()->team_id,
+//                'name' => Crypt::encryptString($user->username)
+//            ]);
 
             $user->team_id = Auth::user()->team_id;
+//            $user->chat_id = $chat->id;
             $user->save();
 
             return redirect()->route('admin.users')->with('success', 'User added to the team successfully.');
@@ -88,12 +89,13 @@ class AdminController extends Controller
             return redirect()->route('admin.users')->withErrors(['You cannot remove yourself.']);
         }
 
-        $chat = ChatContact::where('name', Crypt::decryptString($user->username))->first();
+//        $chat = ChatContact::where('name', Crypt::decryptString($user->username))->first();
 
-        $chat->team_id = null;
-        $chat->save();
+ //       $chat->team_id = null;
+ //       $chat->save();
 
         $user->team_id = null;
+//        $user->chat_id = null;
         $user->role = 'user';
         $user->save();
 

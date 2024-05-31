@@ -33,14 +33,14 @@ class User extends Authenticatable
         'team_id',
     ];
 
-    public function todo()
-    {
-        return $this->BelongsToMany(Todo::class);
-    }
-
     public function team()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function chat()
+    {
+        return $this->belongsTo(ChatContact::class, 'chat_id');
     }
 
     protected $casts = [

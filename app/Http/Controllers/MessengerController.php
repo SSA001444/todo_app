@@ -8,22 +8,24 @@ use App\Models\ChatContact;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class MessengerController extends Controller
 {
     public function index()
     {
-        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->get();
+        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->whereNot('id', Auth::user()->chat_id)->get();
 
         return view('messenger.messenger', compact( 'chatContacts'));
     }
 
     public function showDialog($contactId)
     {
-        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->get();
+        $chatContacts = ChatContact::where('team_id', Auth::user()->team_id)->whereNot('id', Auth::user()->chat_id)->get();
 
         $selectedChatContact = ChatContact::where('id', $contactId)
                                           ->where('team_id', Auth::user()->team_id)
+                                          ->whereNot('id', Auth::user()->chat_id)
                                           ->first();
 
         $messages = Message::where(function ($query) use ($contactId) {
@@ -64,7 +66,7 @@ class MessengerController extends Controller
         }
 
         $message->update([
-            'message' => $request->message,
+            'message' => Crypt::encryptString($request->message),
             'edited' => true,
         ]);
 
@@ -79,12 +81,13 @@ class MessengerController extends Controller
 
         $selectedChatContact = ChatContact::where('id', $contactId)
                                           ->where('team_id', Auth::user()->team_id)
+                                          ->whereNot('id', Auth::user()->chat_id)
                                           ->first();
 
         Message::create([
             'user_id' => Auth::id(),
             'recipient_id' => $contactId,
-            'message' => $request->message,
+            'message' => Crypt::encryptString($request->message),
         ]);
 
         if($selectedChatContact) {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\ChatContact;
+use Illuminate\Support\Facades\Crypt;
 
 class TeamController extends Controller
 {
@@ -28,12 +29,18 @@ class TeamController extends Controller
             'name' => $request->teamName,
         ]);
 
-        ChatContact::create([
+//        $chat = ChatContact::create([
+//            'team_id' => $team->id,
+//            'name' => Crypt::encryptString($user->username),
+//        ]);
+
+         ChatContact::create([
             'team_id' => $team->id,
-            'name' => $team->name . ' Chat'
+            'name' => Crypt::encryptString($team->name . ' Chat')
         ]);
 
         $user->team_id = $team->id;
+//        $user->chat_id = $chat->id;
         $user->role = User::ROLE_ADMIN;
         $user->save();
 

@@ -21,6 +21,12 @@ return new class extends Migration
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger('chat_id')->nullable()->after('team_id');
+
+            $table->foreign('chat_id')->references('id')->on('chat_contacts')->onDelete('cascade');
+        });
     }
 
     /**
@@ -28,6 +34,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::whenTableHasColumn('users', 'chat_id', function (Blueprint $table){
+            $table->dropForeign(['chat_id']);
+        });
+
         Schema::dropIfExists('chat_contacts');
     }
 };
