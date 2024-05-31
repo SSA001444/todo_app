@@ -10,10 +10,10 @@
                 @foreach($chatContacts as $chatContact)
                     <div class="contact-item">
                         <div class="contact-avatar">
-                            <img src="https://via.placeholder.com/40" alt="{{ $chatContact->name }}" class="contact-avatar-img">
+                            <img src="https://via.placeholder.com/40" alt="{{ Crypt::decryptString($chatContact->name) }}" class="contact-avatar-img">
                         </div>
                         <div class="contact-name">
-                            <a href="{{ route('messenger.dialog', ['contactId' => $chatContact->id]) }}">{{ $chatContact->name }}</a>
+                            <a href="{{ route('messenger.dialog', ['contactId' => $chatContact->id]) }}">{{ Crypt::decryptString($chatContact->name) }}</a>
                         </div>
                     </div>
                 @endforeach
@@ -22,9 +22,9 @@
         <div class="chat-window">
             <div class="chat-header">
                 @isset($selectedUser)
-                    Chat with {{ $selectedUser->username }}
+                    Chat with {{ Crypt::decryptString($selectedUser->username) }}
                 @elseif(isset($selectedChatContact))
-                    Chat with {{ $selectedChatContact->name }}
+                    Chat with {{ Crypt::decryptString($selectedChatContact->name) }}
                 @else
                     Select a contact to start chatting
                 @endisset
@@ -33,7 +33,7 @@
                 @isset($messages)
                     @foreach($messages as $message)
                         <div class="message {{ $message->user_id == Auth::id() ? 'sent' : 'received' }}">
-                            <strong>{{ $message->user->username }}:</strong> {{ $message->message }}
+                            <strong>{{ Crypt::decryptString($message->user->username) }}:</strong> {{ $message->message }}
                             @if($message->edited)
                                 <div class="edited-label">
                                     edited {{ $message->updated_at->addHours(3)->format('H:i') }}

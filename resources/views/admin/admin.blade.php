@@ -36,8 +36,8 @@
                                 @foreach($users as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
-                                        <td>{{ $user->username }}</td>
-                                        <td>{{ $user->email }}</td>
+                                        <td>{{ Crypt::decryptString($user->username) }}</td>
+                                        <td>{{ Crypt::decryptString($user->email) }}</td>
                                         <td>
                                             @if($user->id !== Auth::user()->id)
                                                 @if(Auth::user()->role === 'admin')

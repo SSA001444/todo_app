@@ -9,7 +9,6 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -53,18 +52,4 @@ class User extends Authenticatable
         return $this->is_email_verified == 1;
     }
 
-    public function isUser()
-    {
-        return $this->role === self::ROLE_USER;
-    }
-
-    public function isModerator()
-    {
-        return $this->role === self::ROLE_MODERATOR;
-    }
-
-    public function isAdmin()
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
 }

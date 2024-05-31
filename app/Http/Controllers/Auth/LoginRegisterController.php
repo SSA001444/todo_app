@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mail;
-
+use Illuminate\Support\Facades\Crypt;
 
 class LoginRegisterController extends Controller
 {
@@ -35,8 +35,8 @@ class LoginRegisterController extends Controller
         ]);
 
         $createUser = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
+            'username' => Crypt::encryptString($request->username),
+            'email' => Crypt::encryptString($request->email),
             'password' => Hash::make($request->password),
         ]);
         // Create token for email verification
@@ -92,26 +92,31 @@ class LoginRegisterController extends Controller
 
         $identity = $request->input('identity');
         $password = $request->input('password');
-        // Filter for credentials, email or username
-        if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
-            $credentials = ['email' => $identity, 'password' => $password];
-        } else {
-            $credentials = ['username' => $identity, 'password' => $password];
-        }
-        // If email is verified - authorization
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->is_email_verified) {
-                $request->session()->regenerate();
-                return redirect()->route('dashboard')
-                    ->withSuccess('You have successfully logged in!');
-            } else {
-                Auth::logout();
 
-                return back()->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
+        $users = User::all();
+
+        foreach ($users as $user) {
+            $decryptedEmail = Crypt::decryptString($user->email);
+            $decryptedUsername = Crypt::decryptString($user->username);
+
+            if ($decryptedEmail === $identity || $decryptedUsername === $identity) {
+                if (Hash::check($password, $user->password)) {
+                    Auth::login($user);
+                    if (Auth::user()->is_email_verified) {
+                        $request->session()->regenerate();
+                        return redirect()->route('dashboard')
+                            ->withSuccess('You have successfully logged in!');
+                    } else {
+                        Auth::logout();
+                        return back()->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
+                    }
+                } else {
+                    return back()->withErrors(['identity' => 'Invalid credentials. Please try again.']);
+                }
             }
-        } else {
-            return back()->withErrors([ 'identity' => 'Invalid credentials. Please try again.']);
         }
+
+        return back()->withErrors(['identity' => 'Invalid credentials. Please try again.']);
     }
 
     public function dashboard()

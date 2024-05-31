@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tags', function (Blueprint $table) {
-            $table->string('deleted_by')->nullable();
-            $table->unsignedBigInteger('team_id');
-            $table->softDeletes();
+        Schema::create('chat_contacts', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->string('name');
+            $table->timestamps();
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
@@ -27,10 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tags', function (Blueprint $table) {
-            $table->dropForeign(['team_id']);
-            $table->dropColumn(['deleted_by', 'team_id']);
-            $table->dropSoftDeletes();
-        });
+        Schema::dropIfExists('chat_contacts');
     }
 };

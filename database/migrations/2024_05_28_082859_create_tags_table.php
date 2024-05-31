@@ -17,6 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
+            $table->string('deleted_by')->nullable();
+            $table->unsignedBigInteger('team_id');
+            $table->softDeletes();
+
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
 
         Schema::create('tag_ticket', function (Blueprint $table) {

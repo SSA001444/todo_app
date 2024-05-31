@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTeamsTable extends Migration
+return new class extends Migration
 {
     public function up() : void
     {
@@ -26,7 +28,6 @@ class CreateTeamsTable extends Migration
     {
         Schema::whenTableHasColumn('users', 'team_id', function (Blueprint $table){
             $table->dropForeign(['team_id']);
-            $table->dropColumn('team_id');
         });
 
         Schema::dropIfExists('teams');

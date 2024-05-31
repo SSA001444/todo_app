@@ -105,7 +105,7 @@
                         </label>
                     </div>
                     <div class="user-info">
-                        <span class="username">{{ auth()->user()->username }}</span>
+                        <span class="username">{{ Crypt::decryptString(auth()->user()->username) }}</span>
                         <span class="role">{{ ucfirst(auth()->user()->role) }}</span>
                     </div>
                     <a class="header-button" href="{{ route('profile.index') }}">Profile</a>

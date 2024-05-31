@@ -47,7 +47,7 @@
                 <div class="stat-row">
                     <div class="stat-item">
                         <h2>Team Admin</h2>
-                        <p>{{ $admin->username }}</p>
+                        <p>{{ Crypt::decryptString($admin->username) }}</p>
                     </div>
                     <div class="stat-item">
                         <h2>Most Active Ticket</h2>
