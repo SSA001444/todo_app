@@ -26,9 +26,22 @@ class ForgotPasswordController extends Controller
     public function submitForgetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
         ]);
 
+        $users = User::all();
+        $user = null;
+
+        foreach ($users as $potentialUser) {
+            if (Crypt::decryptString($potentialUser->email) === $request->email) {
+                $user = $potentialUser;
+                break;
+            }
+        }
+
+        if (!$user) {
+            return back()->withErrors(['email' => __('messages.email_not_found')]);
+        }
 
         $token = Str::random(64);
 
@@ -39,7 +52,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         $locale = App::getLocale();
-        $view = 'email.forgetPassword.' . $locale;
+        $view = 'email.forgetPassword.' . $locale. ".forgetPassword";
 
         Mail::send($view, ['token' => $token], function($message) use($request) {
             $message->to($request->email);
@@ -57,10 +70,11 @@ class ForgotPasswordController extends Controller
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required'
         ]);
+
 
         $resetPasswordEntries = DB::table('password_resets')
                                   ->where('token', $request->token)
@@ -69,7 +83,7 @@ class ForgotPasswordController extends Controller
         $emailMatch = false;
 
         foreach ($resetPasswordEntries as $entry) {
-            if (Crypt::decryptString($entry->email) === $request->email) {
+            if ($entry->email === $request->email) {
                 $emailMatch = true;
                 break;
             }
@@ -79,7 +93,15 @@ class ForgotPasswordController extends Controller
             return back()->withInput()->with('error', __('messages.invalid_token'));
         }
 
-        $user = User::where('email', $request->email)->first();
+        $users = User::all();
+        $user = null;
+
+        foreach ($users as $potentialUser) {
+            if (Crypt::decryptString($potentialUser->email) === $request->email) {
+                $user = $potentialUser;
+                break;
+            }
+        }
 
         if (!$user) {
             return back()->withInput()->with('error', __('messages.user_not_found'));

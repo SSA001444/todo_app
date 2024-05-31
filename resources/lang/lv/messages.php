@@ -147,4 +147,7 @@ return [
     'invalid_token' => 'Nederīgs tokens!',
     'password_changed' => 'Jūsu parole ir mainīta!',
     'password_reset_link_sent' => 'Mēs esam nosūtījuši paroles atiestatīšanas saiti uz jūsu e-pastu!',
+    'email_verification' => 'Lūdzu, pārbaudiet savu e-pasta adresi.',
+    'email_already_taken' => 'E-pasts jau tiek izmantots.',
+    'username_already_taken' => 'Lietotājvārds jau tiek izmantots.',
 ];

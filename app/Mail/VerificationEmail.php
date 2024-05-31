@@ -23,11 +23,12 @@ class VerificationEmail extends Mailable
     public function build()
     {
         $locale = App::getLocale();
-        $view = 'email.verification.' . $locale;
+        $view = 'email.verification.' . $locale . '.verificationEmail';
 
         return $this->view($view)
-                    ->subject(__('messages.email_verification'))
-                    ->with([
-                        'verificationUrl' => $this->verificationUrl,
-                    ]);    }
+            ->subject(__('messages.email_verification'))
+            ->with([
+                'verificationUrl' => $this->verificationUrl,
+            ]);
+    }
 }

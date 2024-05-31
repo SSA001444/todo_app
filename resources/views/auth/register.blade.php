@@ -13,13 +13,9 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                @if ($errors->any())
+                @if (session('message'))
                     <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                            {{ session('message') }}
                     </div>
                 @endif
 

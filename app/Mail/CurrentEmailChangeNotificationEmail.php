@@ -24,7 +24,7 @@ class CurrentEmailChangeNotificationEmail extends Mailable
     public function build()
     {
         $locale = App::getLocale();
-        $view = 'email.currentEmailChange.' . $locale;
+        $view = 'email.currentEmailChange.' . $locale . '.currentEmailChange';
 
         return $this->view($view)
                     ->subject(__('messages.verify_current_email'))

@@ -158,4 +158,7 @@ return [
     'invalid_token' => 'Недействительный токен!',
     'password_changed' => 'Ваш пароль был изменен!',
     'password_reset_link_sent' => 'Мы отправили ссылку для сброса пароля на вашу электронную почту!',
+    'email_verification' => 'Пожалуйста, подтвердите email.',
+    'email_already_taken' => 'Электронная почта уже используется.',
+    'username_already_taken' => 'Имя пользователя уже используется.',
 ];

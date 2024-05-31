@@ -6,24 +6,18 @@
             <div class="input-item-logo">
                 <img class="input-logo" src="{{ asset('images/logo_bg.png') }}" alt="">
             </div>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
             <form action="{{ route('authenticate') }}" method="post">
                 @csrf
-                <div id="error-container" class="alert alert-danger" style="display: none;">
-                    @if ($errors->any())
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('message'))
                         <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            {{ session('message') }}
                         </div>
                     @endif
-                </div>
 
                 <div class="input-img-cont">
                     <img class="input-img" src="{{ asset('images/auth/lock.png') }}" alt="">

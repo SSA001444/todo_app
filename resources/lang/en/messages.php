@@ -147,5 +147,7 @@ return [
     'invalid_token' => 'Invalid token!',
     'password_changed' => 'Your password has been changed!',
     'password_reset_link_sent' => 'We have e-mailed your password reset link!',
-
+    'email_verification' => 'Please verify your email address.',
+    'email_already_taken' => 'Email is already taken.',
+    'username_already_taken' => 'Username is already taken.',
 ];

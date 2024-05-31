@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Mail\CurrentEmailChangeNotificationEmail;
+use App\Mail\VerificationEmail;
 use App\Models\ChatContact;
 use App\Models\User;
 use App\Models\UserVerify;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -34,11 +37,23 @@ class LoginRegisterController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        $users = User::all();
+        foreach ($users as $user) {
+            if (Crypt::decryptString($user->email) === $request->email) {
+                return back()->withErrors(['email' => __('messages.email_already_taken')]);
+            }
+            if (Crypt::decryptString($user->username) === $request->username) {
+                return back()->withErrors(['username' => __('messages.username_already_taken')]);
+            }
+        }
+
         $createUser = User::create([
             'username' => Crypt::encryptString($request->username),
             'email' => Crypt::encryptString($request->email),
             'password' => Hash::make($request->password),
         ]);
+
+
         // Create token for email verification
         $token = Str::random(40);
 
@@ -47,14 +62,12 @@ class LoginRegisterController extends Controller
            'token' => $token,
         ]);
 
+        $verificationUrl = route('user.verify', ['token' => $token]);
+
         // Email sending site for verification
-        Mail::send('email.verificationEmail', ['token' => $token], function($message) use($request) {
-           $message->to($request->email);
-           $message->subject('Email Verification Mail');
-        });
+        Mail::to($request->email)->send(new VerificationEmail($verificationUrl));
 
         return redirect()->route('login')->with('success', __('messages.email_verification_sent'));
-
     }
 
     public function verifyAccount($token)
