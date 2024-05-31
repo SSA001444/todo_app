@@ -40,7 +40,7 @@ class TicketController extends Controller
 
         $ticket->tags()->sync($request->tags);
 
-        return redirect()->route('tickets.index')->with('success', 'Ticket created successfully');
+        return redirect()->route('tickets.index')->with('success', __('messages.ticket_created'));
     }
 
     public function show($id)
@@ -67,7 +67,7 @@ class TicketController extends Controller
             'completed' => false,
         ]);
 
-        return back()->with('success', 'Task added successfully');
+        return back()->with('success', __('messages.task_added'));
     }
 
     public function storeComment(Request $request)
@@ -96,7 +96,7 @@ class TicketController extends Controller
             'photo' => $path,
         ]);
 
-        return back()->with('success', 'Comment added successfully');
+        return back()->with('success', __('messages.comment_added'));
     }
 
     public function updateComment(Request $request, $id)
@@ -112,10 +112,10 @@ class TicketController extends Controller
             $comment->text = $request->comment;
             $comment->save();
 
-            return back()->with('success', 'Comment updated successfully');
+            return back()->with('success', __('messages.comment_updated'));
         }
 
-        return back()->with('error', 'You are not authorized to update this comment');
+        return back()->with('error', __('messages.unauthorized_update_comment'));
     }
 
     public function destroyComment(Request $request, $id)
@@ -135,10 +135,10 @@ class TicketController extends Controller
             $comment->deleted_at = now();
             $comment->save();
 
-            return back()->with('success', 'Comment deleted successfully');
+            return back()->with('success', __('messages.comment_deleted'));
         }
 
-        return back()->with('error', 'You are not authorized to delete this comment');
+        return back()->with('error', __('messages.unauthorized_delete_comment'));
     }
 
     public function updateTask(Request $request, $taskId)
@@ -177,10 +177,10 @@ class TicketController extends Controller
             $ticket->deleted_at = now();
             $ticket->save();
 
-            return back()->with('success', 'Ticket deleted successfully');
+            return back()->with('success', __('messages.ticket_deleted'));
         }
 
-        return back()->with('error', 'You are not authorized to delete this ticket');
+        return back()->with('error', __('messages.unauthorized_delete_ticket'));
     }
 
     public function update(Request $request, $id)
@@ -198,8 +198,8 @@ class TicketController extends Controller
             $ticket->description = $request->description;
             $ticket->save();
 
-            return back()->with('success', 'Ticket updated successfully');
+            return back()->with('success', __('messages.ticket_updated'));
         }
-        return back()->with('error', 'You are not authorized to update this ticket');
+        return back()->with('error', __('messages.unauthorized_update_ticket'));
     }
 }

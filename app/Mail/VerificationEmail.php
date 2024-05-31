@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\App;
 
 class VerificationEmail extends Mailable
 {
@@ -19,6 +22,12 @@ class VerificationEmail extends Mailable
 
     public function build()
     {
-        return $this->view('email.verification');
-    }
+        $locale = App::getLocale();
+        $view = 'email.verification.' . $locale;
+
+        return $this->view($view)
+                    ->subject(__('messages.email_verification'))
+                    ->with([
+                        'verificationUrl' => $this->verificationUrl,
+                    ]);    }
 }

@@ -36,7 +36,7 @@ class MessengerController extends Controller
         if($selectedChatContact) {
             return view('messenger.messenger', compact( 'chatContacts', 'messages', 'selectedChatContact'));
         } else {
-            return redirect()->back()->with('error', 'You cant see this chat.');
+            return redirect()->back()->with('error', __('messages.unauthorized_chat'));
         }
     }
 
@@ -45,12 +45,12 @@ class MessengerController extends Controller
         $message = Message::findOrFail($messageId);
 
         if ($message->user_id !== Auth::id() && !(Auth::user()->role == 'admin')) {
-            return redirect()->back()->with('error', 'You can only delete your own messages.');
+            return redirect()->back()->with('error', __('messages.unauthorized_delete_message'));
         }
 
         $message->delete();
 
-        return redirect()->back()->with('success', 'Message deleted successfully.');
+        return redirect()->back()->with('success', __('messages.message_deleted'));
     }
 
     public function editMessage(Request $request, $messageId)
@@ -62,7 +62,7 @@ class MessengerController extends Controller
         $message = Message::findOrFail($messageId);
 
         if ($message->user_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'You can only edit your own messages.');
+            return redirect()->back()->with('error', __('messages.unauthorized_edit_message'));
         }
 
         $message->update([
@@ -70,7 +70,7 @@ class MessengerController extends Controller
             'edited' => true,
         ]);
 
-        return redirect()->back()->with('success', 'Message edited successfully.');
+        return redirect()->back()->with('success', __('messages.message_edited'));
     }
 
     public function sendMessage(Request $request, $contactId)
@@ -93,7 +93,7 @@ class MessengerController extends Controller
         if($selectedChatContact) {
             return redirect()->route('messenger.dialog', ['contactId' => $contactId]);
         } else {
-            return redirect()->back()->with('error', 'You cant send to this chat.');
+            return redirect()->back()->with('error', __('messages.unauthorized_send_chat'));
         }
     }
 }

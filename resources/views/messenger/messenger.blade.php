@@ -4,7 +4,7 @@
     <div class="messenger-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                Contacts
+                {{ __('messages.contacts') }}
             </div>
             <div class="contacts">
                 @foreach($chatContacts as $chatContact)
@@ -22,11 +22,11 @@
         <div class="chat-window">
             <div class="chat-header">
                 @isset($selectedUser)
-                    Chat with {{ Crypt::decryptString($selectedUser->username) }}
+                    {{ __('messages.chat_with', ['username' => Crypt::decryptString($selectedUser->username)]) }}
                 @elseif(isset($selectedChatContact))
-                    Chat with {{ Crypt::decryptString($selectedChatContact->name) }}
+                    {{ __('messages.chat_with', ['username' => Crypt::decryptString($selectedChatContact->name)]) }}
                 @else
-                    Select a contact to start chatting
+                    {{ __('messages.select_contact') }}
                 @endisset
             </div>
             <div class="messages">
@@ -36,13 +36,13 @@
                             <div class="message-text">
                                 <strong>{{ Crypt::decryptString($message->user->username) }}:</strong> {{ Crypt::decryptString($message->message) }}
                             </div>
-                        @if($message->edited)
+                            @if($message->edited)
                                 <div class="edited-label">
-                                    edited {{ $message->updated_at->addHours(3)->format('H:i') }}
+                                    {{ __('messages.edited') }} {{ $message->updated_at->addHours(3)->format('H:i') }}
                                 </div>
                             @endif
                             <div class="sent-label">
-                                sent {{ $message->created_at->addHours(3)->format('H:i') }}
+                                {{ __('messages.sent') }} {{ $message->created_at->addHours(3)->format('H:i') }}
                             </div>
                             @if($message->user_id == Auth::id() || (Auth::user()->role == 'admin'))
                                 <div class="message-actions">
@@ -52,30 +52,30 @@
                                         <button type="submit" class="btn-icon"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                     @if($message->user_id == Auth::id())
-                                    <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ Crypt::decryptString($message->message) }}"><i class="fas fa-edit"></i></button>
+                                        <button type="button" class="btn-icon" data-message-id="{{ $message->id }}" data-message-text="{{ Crypt::decryptString($message->message) }}"><i class="fas fa-edit"></i></button>
                                     @endif
                                 </div>
                             @endif
                         </div>
                     @endforeach
                 @else
-                    <p>No messages yet.</p>
+                    <p>{{ __('messages.no_messages') }}</p>
                 @endisset
             </div>
             @isset($selectedUser)
                 <div class="message-input-container">
                     <form action="{{ route('messenger.send', ['contactId' => $selectedUser->id]) }}" method="POST" class="d-flex w-100">
                         @csrf
-                        <input type="text" name="message" class="message-input" placeholder="Type a message">
-                        <button type="submit" class="send-button">Send</button>
+                        <input type="text" name="message" class="message-input" placeholder="{{ __('messages.type_message') }}">
+                        <button type="submit" class="send-button">{{ __('messages.send') }}</button>
                     </form>
                 </div>
             @elseif(isset($selectedChatContact))
                 <div class="message-input-container">
                     <form action="{{ route('messenger.send', ['contactId' => $selectedChatContact->id]) }}" method="POST" class="d-flex w-100">
                         @csrf
-                        <input type="text" name="message" class="message-input" placeholder="Type a message">
-                        <button type="submit" class="send-button">Send</button>
+                        <input type="text" name="message" class="message-input" placeholder="{{ __('messages.type_message') }}">
+                        <button type="submit" class="send-button">{{ __('messages.send') }}</button>
                     </form>
                 </div>
             @endisset
@@ -89,10 +89,10 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label for="editMessageText">Message</label>
+                    <label for="editMessageText">{{ __('messages.edit_message') }}</label>
                     <input type="text" id="editMessageText" name="message" class="message-input">
                 </div>
-                <button type="submit" class="send-button">Save changes</button>
+                <button type="submit" class="send-button">{{ __('messages.save_changes') }}</button>
             </form>
         </div>
     </div>

@@ -53,7 +53,7 @@ class LoginRegisterController extends Controller
            $message->subject('Email Verification Mail');
         });
 
-        return redirect()->route('login')->with('success', 'We send email verification on your email');
+        return redirect()->route('login')->with('success', __('messages.email_verification_sent'));
 
     }
 
@@ -61,7 +61,7 @@ class LoginRegisterController extends Controller
     {
         $verifyUser = UserVerify::where('token', $token)->first();
 
-        $message = 'Sorry your email cannot be identified.';
+        $message = __('messages.email_verification_error');
         // If email not verified - verification
         if (!is_null($verifyUser)) {
             $user = $verifyUser->user;
@@ -69,9 +69,9 @@ class LoginRegisterController extends Controller
             if (!$user->is_email_verified) {
                 $verifyUser->user->is_email_verified = 1;
                 $verifyUser->user->save();
-                $message = "Your e-mail is verified. You can now login.";
+                $message = __('messages.email_verification_success');;
             } else {
-                $message = "Your e-mail is already verified. You can now login.";
+                $message = __('messages.email_verification_already');
             }
         }
 
@@ -105,18 +105,18 @@ class LoginRegisterController extends Controller
                     if (Auth::user()->is_email_verified) {
                         $request->session()->regenerate();
                         return redirect()->route('dashboard')
-                            ->withSuccess('You have successfully logged in!');
+                            ->withSuccess(__('messages.login_success'));
                     } else {
                         Auth::logout();
-                        return back()->withErrors(['identity' => 'Your email is not verified. Please verify your email.']);
+                        return back()->withErrors(['identity' => __('messages.email_not_verified')]);
                     }
                 } else {
-                    return back()->withErrors(['identity' => 'Invalid credentials. Please try again.']);
+                    return back()->withErrors(['identity' => __('messages.invalid_credentials')]);
                 }
             }
         }
 
-        return back()->withErrors(['identity' => 'Invalid credentials. Please try again.']);
+        return back()->withErrors(['identity' =>  __('messages.invalid_credentials')]);
     }
 
     public function dashboard()
@@ -125,7 +125,7 @@ class LoginRegisterController extends Controller
             return view('auth.dashboard');
         }
 
-        return redirect("login")->withSuccess('Opps! You do not have access');
+        return redirect("login")->withSuccess(__('messages.access_denied'));
     }
 
     public function logout(Request $request)
@@ -136,6 +136,6 @@ class LoginRegisterController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')
-            ->withSuccess('You have logged out successfully!');
+            ->withSuccess(__('messages.logout_success'));
     }
 }
