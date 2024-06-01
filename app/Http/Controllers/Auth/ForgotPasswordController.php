@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -10,6 +12,8 @@ use Hash;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Crypt;
 
 class ForgotPasswordController extends Controller
 {
@@ -22,8 +26,22 @@ class ForgotPasswordController extends Controller
     public function submitForgetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users',
+            'email' => 'required|email',
         ]);
+
+        $users = User::all();
+        $user = null;
+
+        foreach ($users as $potentialUser) {
+            if (Crypt::decryptString($potentialUser->email) === $request->email) {
+                $user = $potentialUser;
+                break;
+            }
+        }
+
+        if (!$user) {
+            return back()->withErrors(['email' => __('messages.email_not_found')]);
+        }
 
         $token = Str::random(64);
 
@@ -33,12 +51,15 @@ class ForgotPasswordController extends Controller
             'created_at' => Carbon::now()
         ]);
 
-        Mail::send('email.forgetPassword', ['token' => $token], function($message) use($request) {
+        $locale = App::getLocale();
+        $view = 'email.forgetPassword.' . $locale. ".forgetPassword";
+
+        Mail::send($view, ['token' => $token], function($message) use($request) {
             $message->to($request->email);
-            $message->subject('Reset Password');
+            $message->subject(__('messages.reset_password'));
         });
 
-        return back()->with('message', 'We have e-mailed your password reset link!');
+        return back()->with('message', __('messages.password_reset_link_sent'));
     }
 
     public function showResetPasswordForm($token)
@@ -49,27 +70,48 @@ class ForgotPasswordController extends Controller
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required'
         ]);
 
-        $updatePassword = DB::table('password_resets')
-            ->where([
-                'email' => $request->email,
-                'token' => $request->token
-            ])
-            ->first();
 
-        if (!$updatePassword) {
-            return back()->withInput()->with('error', 'Invalid token!');
+        $resetPasswordEntries = DB::table('password_resets')
+                                  ->where('token', $request->token)
+                                  ->get();
+
+        $emailMatch = false;
+
+        foreach ($resetPasswordEntries as $entry) {
+            if ($entry->email === $request->email) {
+                $emailMatch = true;
+                break;
+            }
+        }
+
+        if (!$emailMatch) {
+            return back()->withInput()->with('error', __('messages.invalid_token'));
+        }
+
+        $users = User::all();
+        $user = null;
+
+        foreach ($users as $potentialUser) {
+            if (Crypt::decryptString($potentialUser->email) === $request->email) {
+                $user = $potentialUser;
+                break;
+            }
+        }
+
+        if (!$user) {
+            return back()->withInput()->with('error', __('messages.user_not_found'));
         }
         // Setting new password
-        $user = User::where('email', $request->email)
-            ->update(['password' => Hash::make($request->password)]);
+        $user->password = Hash::make($request->password);
+        $user->save();
 
         DB::table('password_resets')->where(['email' => $request->email])->delete();
 
-        return redirect('/login')->with('message', 'Your password has been changed!');
+        return redirect('/login')->with('message', __('messages.password_changed'));
     }
 }

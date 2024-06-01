@@ -29,9 +29,9 @@ class TagController extends Controller
                 'team_id' => Auth::user()->team_id
             ]);
 
-            return redirect()->route('tags.index')->with('success', 'Tag created successfully.');
+            return redirect()->route('tags.index')->with('success', __('messages.tag_created_success'));
         } else {
-            return back()->with('error', 'You are not authorized to create new tag');
+            return back()->with('error', __('messages.unauthorized'));
         }
     }
 
@@ -40,7 +40,7 @@ class TagController extends Controller
         $tag = Tag::find($id);
 
         if (!$tag) {
-            return redirect()->route('tags.index')->with('error', 'Tag not found');
+            return redirect()->route('tags.index')->with('error', __('messages.tag_not_found'));
         }
 
         return response()->json($tag);
@@ -51,7 +51,7 @@ class TagController extends Controller
         $tag = Tag::find($id);
 
         if (!$tag) {
-            return redirect()->route('tags.index')->with('error', 'Tag not found');
+            return redirect()->route('tags.index')->with('error', __('messages.tag_not_found'));
         }
 
         if (($tag->team_id == Auth::user()->team_id) && (Auth::user()->role == 'moderator' || Auth::user()->role == 'admin')) {
@@ -62,9 +62,9 @@ class TagController extends Controller
 
         $tag->update($request->all());
 
-        return redirect()->route('tags.index')->with('success', 'Tag updated successfully.');
+            return redirect()->route('tags.index')->with('success', __('messages.tag_updated_success'));
         } else {
-            return redirect()->route('tags.index')->with('error', 'Tag not found');
+            return redirect()->route('tags.index')->with('success', __('messages.tag_updated_success'));
         }
     }
 
@@ -73,7 +73,7 @@ class TagController extends Controller
         $tag = Tag::find($id);
         $user = Auth::user();
         if (!$tag) {
-            return redirect()->route('tags.index')->with('error', 'Tag not found');
+            return redirect()->route('tags.index')->with('error', __('messages.tag_not_found'));
         }
 
         if (($tag->team_id == $user->team_id) && ($user->role == 'moderator' || $user->role == 'admin') ) {
@@ -82,9 +82,9 @@ class TagController extends Controller
             $tag->deleted_at = now();
             $tag->save();
 
-            return redirect()->route('tags.index')->with('success', 'Tag deleted successfully.');
+            return redirect()->route('tags.index')->with('success', __('messages.tag_deleted_success'));
         } else {
-            return redirect()->route('tags.index')->with('error', 'Tag not found');
+            return redirect()->route('tags.index')->with('error', __('messages.tag_not_found'));
         }
     }
 }

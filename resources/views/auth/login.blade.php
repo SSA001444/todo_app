@@ -6,30 +6,24 @@
             <div class="input-item-logo">
                 <img class="input-logo" src="{{ asset('images/logo_bg.png') }}" alt="">
             </div>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
             <form action="{{ route('authenticate') }}" method="post">
                 @csrf
-                <div id="error-container" class="alert alert-danger" style="display: none;">
-                    @if ($errors->any())
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('message'))
                         <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            {{ session('message') }}
                         </div>
                     @endif
-                </div>
 
                 <div class="input-img-cont">
                     <img class="input-img" src="{{ asset('images/auth/lock.png') }}" alt="">
                 </div>
                 <div class="input-input">
-                    <input type="text" class="input @error('identity') is-invalid @enderror" name="identity" placeholder="Enter your email or username...">
+                    <input type="text" class="input @error('identity') is-invalid @enderror" name="identity" placeholder="{{ __('messages.enter_email_username') }}" required>
                     @error ('identity')
                     <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -38,22 +32,22 @@
                 </div>
 
                 <div class="input-input">
-                    <input type="password" class="input" name="password" placeholder="Enter your password">
+                    <input type="password" class="input" name="password" placeholder="{{ __('messages.enter_password') }}" required>
                     @if ($errors->has('password'))
                         <span class="invalid-feedback" role="alert">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
 
                 <div class="input-item-but">
-                    <button type="submit" class="add-input">Login</button>
+                    <button type="submit" class="add-input">{{ __('messages.login') }}</button>
                 </div>
 
                 <div class="input-item-text">
-                    <p class="input-title">Login</p>
+                    <p class="input-title">{{ __('messages.login') }}</p>
                 </div>
 
                 <div class="input-controls">
-                    <a href="{{ route('forget.password.get') }}" class="btn btn-primary">Reset Password</a>
+                    <a href="{{ route('forget.password.get') }}" class="btn btn-primary">{{ __('messages.reset_password') }}</a>
                 </div>
             </form>
         </div>

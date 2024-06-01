@@ -22,7 +22,7 @@ class TeamController extends Controller
         $user = Auth::user();
 
         if ($user->team_id) {
-            return redirect()->route('team-status')->withErrors(['You are already a member of a team.']);
+            return redirect()->route('team-status')->withErrors(['team' => __('messages.team_creation_failed')]);
         }
 
         $team = Team::create([
@@ -44,7 +44,7 @@ class TeamController extends Controller
         $user->role = User::ROLE_ADMIN;
         $user->save();
 
-        return redirect()->route('team-status')->with('success', 'Team created successfully!');
+        return redirect()->route('team-status')->with('success', __('messages.team_created_success'));
     }
 }
 

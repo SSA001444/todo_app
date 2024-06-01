@@ -1,121 +1,139 @@
 @extends('auth.layouts')
 
 @section('content')
-    @if($ticket->team_id == Auth::user()->team_id)
-    <div class="ticket-container">
-        <div class="ticket-details">
-            <h2 class="ticket-title">{{ $ticket->title }}</h2>
-            <p class="ticket-description">{{ $ticket->description }}</p>
-            <div class="ticket-meta">
-                <span class="ticket-status {{ $ticket->status }}">{{ ucfirst($ticket->status) }}</span>
-                @foreach($ticket->tags as $tag)
-                    <span class="badge badge-primary">{{ $tag->name }}</span>
+
+    <div class="alert-container">
+        <div>
+            @if (session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session()->get('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger">
+                        {{ $error }}
+                    </div>
                 @endforeach
-            </div>
-            @if(($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id)
-                <button id="editTicketBtn" class="btn btn-primary">Edit Ticket</button>
             @endif
         </div>
-
-        <div class="tasks-container">
-            <h3 class="tasks-h3">Tasks <button id="addTaskBtn" class="btn btn-primary add-task-button">Add Task</button></h3>
-            <ul>
-                @foreach($tasks as $task)
-                    <li>
-                        <input type="checkbox" id="task-{{ $task->id }}" {{ $task->completed ? 'checked' : '' }}>
-                        {{ $task->name }}
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-
-        <div class="comments-container">
-            <h3>Comments</h3>
-            @foreach($comments as $comment)
-                <div class="comment-block">
-                    @if($comment->trashed())
-                        <div class="comment-text">This comment was deleted by {{ $comment->deleted_by }} ({{ $comment->deleted_by_role }}) due to: {{ $comment->deletion_reason }}</div>
-                    @else
-                        <div class="comment-author">{{ $comment->user->username }}</div>
-                        @if($comment->photo)
-                            <img src="{{ asset($comment->photo) }}" alt="Comment Photo" class="comment-photo">
-                        @endif
-                        <div class="comment-actions">
-                            @if(($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id )
-                                <button class="edit-comment-btn" data-id="{{ $comment->id }}">Edit</button>
-                                <button class="delete-comment-btn" data-id="{{ $comment->id }}">Delete</button>
-                            @endif
-                        </div>
-                        <div class="comment-text">{!! nl2br(e($comment->text)) !!}</div>
-                        <div class="comment-date">By {{ $comment->user->username }} at {{ $comment->created_at }}</div>
-                    @endif
+    </div>
+    @if($ticket->team_id == Auth::user()->team_id)
+        <div class="ticket-container">
+            <div class="ticket-details">
+                <h2 class="ticket-title">{{ $ticket->title }}</h2>
+                <p class="ticket-description">{{ $ticket->description }}</p>
+                <div class="ticket-meta">
+                    <span class="ticket-status {{ $ticket->status }}">{{ ucfirst($ticket->status) }}</span>
+                    @foreach($ticket->tags as $tag)
+                        <span class="badge badge-primary">{{ $tag->name }}</span>
+                    @endforeach
                 </div>
-            @endforeach
+                @if(($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id)
+                    <button id="editTicketBtn" class="btn btn-primary">{{ __('messages.edit_ticket') }}</button>
+                @endif
+            </div>
 
-            <form action="{{ route('comments.store') }}" method="POST" enctype="multipart/form-data" class="comment-form">
-                @csrf
-                <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                <textarea name="comment" class="comment-input" placeholder="Add a comment" required></textarea>
-                <input type="file" name="photo" accept="image/*" class="comment-photo-input">
-                <button type="submit" class="btn btn-primary">Add Comment</button>
-            </form>
+            <div class="tasks-container">
+                <h3 class="tasks-h3">{{ __('messages.tasks') }} <button id="addTaskBtn" class="btn btn-primary add-task-button">{{ __('messages.add_task') }}</button></h3>
+                <ul>
+                    @foreach($tasks as $task)
+                        <li>
+                            <input type="checkbox" id="task-{{ $task->id }}" {{ $task->completed ? 'checked' : '' }}>
+                            {{ $task->name }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="comments-container">
+                <h3>{{ __('messages.comments') }}</h3>
+                @foreach($comments as $comment)
+                    <div class="comment-block">
+                        @if($comment->trashed())
+                            <div class="comment-text">{{ __('messages.deleted_comment', ['deleted_by' => Crypt::decryptString($comment->deleted_by), 'deleted_by_role' => $comment->deleted_by_role, 'deletion_reason' => $comment->deletion_reason]) }}</div>
+                        @else
+                            <div class="comment-author">{{ Crypt::decryptString($comment->user->username) }}</div>
+                            @if($comment->photo)
+                                <img src="{{ asset($comment->photo) }}" alt="Comment Photo" class="comment-photo">
+                            @endif
+                            <div class="comment-actions">
+                                @if(($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id )
+                                    <button class="edit-comment-btn" data-id="{{ $comment->id }}">{{ __('messages.edit') }}</button>
+                                    <button class="delete-comment-btn" data-id="{{ $comment->id }}">{{ __('messages.delete') }}</button>
+                                @endif
+                            </div>
+                            <div class="comment-text">{!! nl2br(e($comment->text)) !!}</div>
+                            <div class="comment-date">{{ __('messages.by') }} {{ Crypt::decryptString($comment->user->username) }} {{ __('messages.at') }} {{ $comment->created_at }}</div>
+                        @endif
+                    </div>
+                @endforeach
+
+                <form action="{{ route('comments.store') }}" method="POST" enctype="multipart/form-data" class="comment-form">
+                    @csrf
+                    <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                    <textarea name="comment" class="comment-input" placeholder="{{ __('messages.add_comment') }}" required></textarea>
+                    <input type="file" name="photo" accept="image/*" class="comment-photo-input">
+                    <button type="submit" class="btn btn-primary">{{ __('messages.add_comment') }}</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- Edit Ticket Modal -->
-    <div id="editTicketModal" class="modal-task">
-        <div class="modal-content-task">
-            <span class="close-task" id="close_edit_ticket">&times;</span>
-            <h2>Edit Ticket</h2>
-            <form id="editTicketForm" method="POST" action="">
-                @csrf
-                @method('PATCH')
-                <span></span>
-                <input name="title" class="task-input" id="edit-ticket-title" required>
-                <textarea name="description" class="task-input" id="edit-ticket-description" required></textarea>
-                <button type="submit" class="btn btn-primary">Update Ticket</button>
-            </form>
+        <!-- Edit Ticket Modal -->
+        <div id="editTicketModal" class="modal-task">
+            <div class="modal-content-task">
+                <span class="close-task" id="close_edit_ticket">&times;</span>
+                <h2>{{ __('messages.edit_ticket') }}</h2>
+                <form id="editTicketForm" method="POST" action="">
+                    @csrf
+                    @method('PATCH')
+                    <span></span>
+                    <input name="title" class="task-input" id="edit-ticket-title" required>
+                    <textarea name="description" class="task-input" id="edit-ticket-description" required></textarea>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.update_ticket') }}</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- Modal for adding tasks -->
-    <div id="addTaskModal" class="modal-task">
-        <div class="modal-content-task">
-            <span class="close-task" id="add_task">&times;</span>
-            <h2>Add Task</h2>
-            <form id="addTaskForm" action="{{ route('tasks.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
-                <label for="task">Task:</label>
-                <input type="text" name="task" class="task-input" required>
-                <button type="submit" class="btn btn-primary">Add Task</button>
-            </form>
+        <!-- Modal for adding tasks -->
+        <div id="addTaskModal" class="modal-task">
+            <div class="modal-content-task">
+                <span class="close-task" id="add_task">&times;</span>
+                <h2>{{ __('messages.add_task') }}</h2>
+                <form id="addTaskForm" action="{{ route('tasks.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+                    <label for="task">{{ __('messages.task') }}:</label>
+                    <input type="text" name="task" class="task-input" required>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.add_task') }}</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- Edit Comment Modal -->
-    <div id="editCommentModal" class="modal-task">
-        <div class="modal-content-task">
-            <span class="close-task" id="edit_comment">&times;</span>
-            <h2>Edit Comment</h2>
-            <form id="editCommentForm" method="POST" action="">
-                @csrf
-                @method('PATCH')
-                <input name="comment" class="task-input" id="edit-comment-text" required>
-                <button type="submit" class="btn btn-primary">Update Comment</button>
-            </form>
+        <!-- Edit Comment Modal -->
+        <div id="editCommentModal" class="modal-task">
+            <div class="modal-content-task">
+                <span class="close-task" id="edit_comment">&times;</span>
+                <h2>{{ __('messages.edit_comment') }}</h2>
+                <form id="editCommentForm" method="POST" action="">
+                    @csrf
+                    @method('PATCH')
+                    <input name="comment" class="task-input" id="edit-comment-text" required>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.update_comment') }}</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <!-- Delete Comment Modal -->
-    <div id="deleteCommentModal" class="modal-task">
-        <div class="modal-content-task">
-            <span class="close-task" id="delete_comment">&times;</span>
-            <h2>Delete Comment</h2>
-            <form id="deleteCommentForm" method="POST" action="">
-                @csrf
-                @method('DELETE')
-                <input name="reason" id="delete-reason" class="task-input" placeholder="Reason for deletion" required>
-                <button type="submit" class="btn btn-primary">Delete Comment</button>
-            </form>
+        <!-- Delete Comment Modal -->
+        <div id="deleteCommentModal" class="modal-task">
+            <div class="modal-content-task">
+                <span class="close-task" id="delete_comment">&times;</span>
+                <h2>{{ __('messages.delete_comment') }}</h2>
+                <form id="deleteCommentForm" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <input name="reason" id="delete-reason" class="task-input" placeholder="{{ __('messages.reason_for_deletion') }}" required>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.delete_comment') }}</button>
+                </form>
+            </div>
         </div>
-    </div>
     @endif
     <script>
         $(document).ready(function() {
@@ -167,7 +185,7 @@
 
             $('.edit-comment-btn').on('click', function() {
                 const commentId = $(this).data('id');
-                const commentText = $(this).closest('.comment').find('p').text();
+                const commentText = $(this).closest('.comment-text').find('div').text();
                 $('#edit-comment-text').val(commentText);
                 $('#editCommentForm').attr('action', `/tickets/comments/${commentId}`);
                 editModal.show();

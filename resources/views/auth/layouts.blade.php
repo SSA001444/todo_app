@@ -85,8 +85,18 @@
     <div class="container">
         @guest
             <div class="header-butt-2">
-                <a class="header-logreg" href="{{ route('login') }}">Login</a>
-                <a class="header-logreg" href="{{ route('register') }}">Register</a>
+                    <form class="header-form" action="{{ route('locale.switch') }}" method="POST">
+                        @csrf
+                        <label>
+                            <select class="header-select" name="locale" onchange="this.form.submit()">
+                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                <option value="lv" {{ app()->getLocale() == 'lv' ? 'selected' : '' }}>LV</option>
+                                <option value="ru" {{ app()->getLocale() == 'ru' ? 'selected' : '' }}>RU</option>
+                            </select>
+                        </label>
+                </form>
+                <a class="header-logreg" href="{{ route('login') }}">{{ __('messages.login') }}</a>
+                <a class="header-logreg" href="{{ route('register') }}">{{ __('messages.register') }}</a>
             </div>
         @else
             <div class="header-item">
@@ -108,27 +118,29 @@
                         <span class="username">{{ Crypt::decryptString(auth()->user()->username) }}</span>
                         <span class="role">{{ ucfirst(auth()->user()->role) }}</span>
                     </div>
-                    <a class="header-button" href="{{ route('profile.index') }}">Profile</a>
-                    <a class="header-button" href="{{ route('logout') }}">Logout</a>
+                    <a class="header-button" href="{{ route('profile.index') }}">{{ __('messages.profile') }}</a>
+                    <a class="header-button" href="{{ route('logout') }}">{{ __('messages.logout') }}</a>
                 </div>
                 <a href="{{ route('team-status') }}" class="header-center-img">
                     <img src="{{ asset('images/header/bird_wbg.png') }}" alt="Main Page">
                 </a>
                 <div class="header-butt">
-                    <form class="header-form">
+                    <form class="header-form" action="{{ route('locale.switch') }}" method="POST">
+                        @csrf
                         <label>
-                            <select class="header-select" name="" id="">
-                                <option value="">EN</option>
-                                <option value="">LV</option>
+                            <select class="header-select" name="locale" onchange="this.form.submit()">
+                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                <option value="lv" {{ app()->getLocale() == 'lv' ? 'selected' : '' }}>LV</option>
+                                <option value="ru" {{ app()->getLocale() == 'ru' ? 'selected' : '' }}>RU</option>
                             </select>
                         </label>
                     </form>
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'moderator')
-                        <a class="header-button" href="{{route('admin.users')}}">Admin Panel</a>
+                        <a class="header-button" href="{{route('admin.users')}}">{{ __('messages.admin_panel') }}</a>
                     @endif
-                    <a class="header-button" href="{{route('messenger.index')}}">Messenger</a>
-                    <a class="header-button" href="{{route('tickets.index')}}">Tickets</a>
-                    <a class="header-button" href="{{route('tags.index')}}">Tags</a>
+                    <a class="header-button" href="{{route('messenger.index')}}">{{ __('messages.messenger') }}</a>
+                    <a class="header-button" href="{{route('tickets.index')}}">{{ __('messages.tickets') }}</a>
+                    <a class="header-button" href="{{route('tags.index')}}">{{ __('messages.tags') }}</a>
                 </div>
             </div>
         @endguest

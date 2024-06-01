@@ -26,35 +26,35 @@
             </div>
 
             <div class="team-info">
-                <h1 class="team-status-header">Team: {{ $teamName }}</h1>
+                <h1 class="team-status-header">{{ __('messages.team') }}: {{ $teamName }}</h1>
             </div>
 
             <div class="team-statistics">
                 <div class="stat-row">
                     <div class="stat-item">
-                        <h2>Team Members</h2>
+                        <h2>{{ __('messages.team_members') }}</h2>
                         <p>{{ $memberCount }}</p>
                     </div>
                     <div class="stat-item">
-                        <h2>Open Tickets</h2>
+                        <h2>{{ __('messages.open_tickets') }}</h2>
                         <p>{{ $openTicketsCount }}</p>
                     </div>
                     <div class="stat-item">
-                        <h2>Total Existing Tickets</h2>
+                        <h2>{{ __('messages.total_existing_tickets') }}</h2>
                         <p>{{ $existingTicketsCount }}</p>
                     </div>
                 </div>
                 <div class="stat-row">
                     <div class="stat-item">
-                        <h2>Team Admin</h2>
+                        <h2>{{ __('messages.team_admin') }}</h2>
                         <p>{{ Crypt::decryptString($admin->username) }}</p>
                     </div>
                     <div class="stat-item">
-                        <h2>Most Active Ticket</h2>
+                        <h2>{{ __('messages.most_active_ticket') }}</h2>
                         @if ($mostActiveTicket)
                             <p><a href="{{ route('tickets.show', $mostActiveTicket->id) }}">{{ $mostActiveTicket->title }}</a> ({{ $mostActiveTicket->comments_count }} comments)</p>
                         @else
-                            <p>No tickets with comments</p>
+                            <p>{{ __('messages.no_tickets_with_comments') }}</p>
                         @endif
                     </div>
                 </div>
@@ -62,8 +62,8 @@
         </section>
     @else
         <div class="no-team-container">
-            <h1 class="no-team-header">You need to create your own team or wait to be invited</h1>
-            <button id="createTeamBtn" class="create-team-btn">Create Team</button>
+            <h1 class="no-team-header">{{ __('messages.no_team') }}</h1>
+            <button id="createTeamBtn" class="create-team-btn">{{ __('messages.create_team') }}</button>
         </div>
     @endif
 
@@ -71,12 +71,12 @@
     <div id="createTeamModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Create a New Team</h2>
+            <h2>{{ __('messages.create_new_team') }}</h2>
             <form id="createTeamForm" action="{{ route('teams.store') }}" method="POST">
                 @csrf
-                <label for="teamName">Team Name</label>
+                <label for="teamName">{{ __('messages.team_name') }}</label>
                 <input type="text" id="teamName" name="teamName" class="input-team-name" required>
-                <button type="submit" class="submit-team-btn">Create</button>
+                <button type="submit" class="submit-team-btn">{{ __('messages.submit_create_team') }}</button>
             </form>
         </div>
     </div>

@@ -32,6 +32,8 @@ Route::controller(\App\Http\Controllers\Auth\ForgotPasswordController::class)->g
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
 
+Route::post('/locale-switch', [\App\Http\Controllers\LanguageController::class, 'switchLocale'])->name('locale.switch');
+
 Route::middleware(['auth'])->group(function () {
 
     Route::controller(\App\Http\Controllers\TeamStatusController::class)->group(function () {

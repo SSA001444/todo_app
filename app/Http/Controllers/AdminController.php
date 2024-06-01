@@ -40,7 +40,7 @@ class AdminController extends Controller
 
         if ($user) {
             if ($user->team_id) {
-                return redirect()->route('admin.users')->withErrors(['User is already in a team.']);
+                return redirect()->route('admin.users')->withErrors([__('messages.user_already_in_team')]);
             }
 
             //Create a chat ( not working due fatal error )
@@ -53,9 +53,9 @@ class AdminController extends Controller
 //            $user->chat_id = $chat->id;
             $user->save();
 
-            return redirect()->route('admin.users')->with('success', 'User added to the team successfully.');
+            return redirect()->route('admin.users')->with('success', __('messages.user_added_success'));
         } else {
-            return redirect()->route('admin.users')->withErrors(['User with this email or username not found.']);
+            return redirect()->route('admin.users')->withErrors([__('messages.user_not_found')]);
         }
     }
 
@@ -66,27 +66,27 @@ class AdminController extends Controller
         ]);
 
         if (Auth::user()->role !== 'admin') {
-            return redirect()->route('admin.users')->withErrors(['You do not have permission to change roles.']);
+            return redirect()->route('admin.users')->withErrors([__('messages.no_permission_change_roles')]);
         }
 
         if ($user->id == Auth::user()->id) {
-            return redirect()->route('admin.users')->withErrors(['You cannot change your own role.']);
+            return redirect()->route('admin.users')->withErrors([__('messages.cannot_change_own_role')]);
         }
 
         $user->role = $request->role;
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'User role updated successfully.');
+        return redirect()->route('admin.users')->with('success', __('messages.user_role_updated'));
     }
 
     public function removeUser(User $user)
     {
         if (Auth::user()->role !== 'admin' && ($user->role === 'admin' || $user->role === 'moderator')) {
-            return redirect()->route('admin.users')->withErrors(['You do not have permission to remove this user.']);
+            return redirect()->route('admin.users')->withErrors([__('messages.permission_denied')]);
         }
 
         if ($user->id == Auth::user()->id) {
-            return redirect()->route('admin.users')->withErrors(['You cannot remove yourself.']);
+            return redirect()->route('admin.users')->withErrors([__('messages.cannot_remove_self')]);
         }
 
 //        $chat = ChatContact::where('name', Crypt::decryptString($user->username))->first();
@@ -99,6 +99,6 @@ class AdminController extends Controller
         $user->role = 'user';
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'User removed from the team successfully.');
+        return redirect()->route('admin.users')->with('success', __('messages.user_removed_success'));
     }
 }

@@ -14,7 +14,7 @@
                 </script>
             @else
                 <div class="alert alert-success">
-                    You are logged in!
+                    {{ __('messages.dashboard_logged_in') }}
                 </div>
                 <script>
                     setTimeout(function () {

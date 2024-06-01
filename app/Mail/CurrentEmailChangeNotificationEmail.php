@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 
 class CurrentEmailChangeNotificationEmail extends Mailable
 {
@@ -22,11 +23,14 @@ class CurrentEmailChangeNotificationEmail extends Mailable
 
     public function build()
     {
-        return $this->view('email.currentEmailChange')
-            ->subject('Confirm Your Current Email Address')
-            ->with([
-                'user' => $this->user,
-                'token' => $this->token,
-            ]);
+        $locale = App::getLocale();
+        $view = 'email.currentEmailChange.' . $locale . '.currentEmailChange';
+
+        return $this->view($view)
+                    ->subject(__('messages.verify_current_email'))
+                    ->with([
+                        'user' => $this->user,
+                        'token' => $this->token,
+                    ]);
     }
 }

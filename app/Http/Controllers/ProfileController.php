@@ -50,7 +50,7 @@ class ProfileController extends Controller
             // Send verification email to the current email
             Mail::to(Crypt::decryptString($user->email))->send(new CurrentEmailChangeNotificationEmail($user, $currentEmailToken));
 
-            return redirect()->route('profile.index')->with('success', 'Profile updated successfully. Please verify your current email address.');
+            return redirect()->route('profile.index')->with('success', __('messages.verify_current_email'));
         }
 
         // Update password if requested
@@ -58,13 +58,13 @@ class ProfileController extends Controller
             if (Hash::check($request->current_password, $user->password)) {
                 $user->password = Hash::make($request->new_password);
             } else {
-                return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect'])->withInput();
+                return redirect()->back()->withErrors(['current_password' => __('messages.current_password_incorrect')])->withInput();
             }
         }
 
         $user->save();
 
-        return redirect()->route('profile.index')->with('success', 'Profile updated successfully')->withInput();
+        return redirect()->route('profile.index')->with('success', __('messages.profile_updated'))->withInput();
     }
 
     public function verifyCurrentEmail($token)
@@ -72,7 +72,7 @@ class ProfileController extends Controller
         $emailChange = EmailChange::where('current_email_verification_token', $token)->first();
 
         if (!$emailChange) {
-            return redirect()->route('profile.index')->withErrors(['email' => 'Invalid or expired email verification token.']);
+            return redirect()->route('profile.index')->withErrors(['email' => __('messages.email_verification_token_invalid')]);
         }
 
         // Generate token for new email verification
@@ -84,7 +84,7 @@ class ProfileController extends Controller
         // Send verification email to the new email
         Mail::to(Crypt::decryptString($emailChange->new_email))->send(new EmailChangeNotificationEmail($emailChange->user, $newEmailToken));
 
-        return redirect()->route('profile.index')->with('success', 'Please verify your new email address.');
+        return redirect()->route('profile.index')->with('success', __('messages.verify_new_email'));
     }
 
     public function verifyNewEmail($token)
@@ -92,7 +92,7 @@ class ProfileController extends Controller
         $emailChange = EmailChange::where('new_email_verification_token', $token)->first();
 
         if (!$emailChange) {
-            return redirect()->route('profile.index')->withErrors(['email' => 'Invalid or expired email verification token.']);
+            return redirect()->route('profile.index')->withErrors(['email' => __('messages.email_verification_token_invalid')]);
         }
 
         // Update email and clear verification tokens
@@ -102,7 +102,7 @@ class ProfileController extends Controller
 
         $emailChange->delete();
 
-        return redirect()->route('profile.index')->with('success', 'Email address updated successfully.');
+        return redirect()->route('profile.index')->with('success', __('messages.email_updated'));
     }
 
     public function updatePhoto(Request $request)
@@ -133,7 +133,7 @@ class ProfileController extends Controller
                 Log::info('Saving profile photo', ['path' => $imagePath]);
                 $user->save();
 
-                return response()->json(['message' => 'Profile photo updated successfully']);
+                return response()->json(['message' => __('messages.profile_photo_updated')]);
             }
 
         } catch (\Intervention\Image\Exception\NotReadableException $e) {
