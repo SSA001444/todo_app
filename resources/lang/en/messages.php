@@ -105,6 +105,7 @@ return [
     'dissolve_team' => 'Dissolve Team',
     'leave_team' => 'Leave Team',
 
+
     //System messages
     'invalid_credentials' => 'Invalid credentials. Please try again.',
     'email_not_verified' => 'Your email is not verified. Please verify your email.',
@@ -158,4 +159,17 @@ return [
     'left_team_successfully' => 'You have left the team successfully.',
     'no_permission' => 'You do not have permission to perform this action.',
     'team_dissolved_successfully' => 'The team has been dissolved successfully.',
+    'user_role_updated' => 'User role successfully updated.',
+    'ticket_created' => 'Ticket created successfully',
+    'task_added' => 'Task added successfully',
+    'comment_added' => 'Comment successfully added',
+    'comment_updated' => 'Comment updated successfully',
+    'comment_deleted' => 'Comment deleted successfully',
+    'unauthorized_update_comment' => 'You are not authorized to update this comment',
+    'unauthorized_delete_comment' => 'You are not authorized to delete this comment',
+    'ticket_deleted' => 'Ticket deleted successfully',
+    'unauthorized_delete_ticket' => 'You are not authorized to delete this ticket',
+    'ticket_updated' => 'Ticket updated successfully',
+    'unauthorized_update_ticket' => 'You are not authorized to update this ticket',
+
 ];
