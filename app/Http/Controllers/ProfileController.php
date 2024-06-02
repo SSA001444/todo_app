@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\CurrentEmailChangeNotificationEmail;
 use App\Mail\EmailChangeNotificationEmail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\Facades\Image;
@@ -24,9 +25,9 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth()->user();
+        $userAuth = auth()->user();
 
-        $validatedData = $request->validate([
+        $request->validate([
             'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
             'current_password' => 'required_if:change_password_hidden,1',
@@ -34,35 +35,54 @@ class ProfileController extends Controller
         ]);
 
         // Update user profile details
-        $user->username = Crypt::encryptString($validatedData['username']);
+        if($request->username !== Crypt::decryptString($userAuth->username)) {
+
+            // Checking for exists username
+            $users = User::all();
+            foreach ($users as $user) {
+                if (Crypt::decryptString($user->username) === $request->username) {
+                    return back()->withErrors(['username' => __('messages.username_already_taken')]);
+                }
+            }
+
+            $userAuth->username = Crypt::encryptString($request->username);
+        }
 
         // Handle email change request
-        if ($validatedData['email'] !== Crypt::decryptString($user->email)) {
+        if ($request->email !== Crypt::decryptString($userAuth->email)) {
+
+            // Checking for exists email
+            $users = User::all();
+            foreach ($users as $user) {
+                if (Crypt::decryptString($user->email) === $request->email) {
+                    return back()->withErrors(['email' => __('messages.email_already_taken')]);
+                }
+            }
             $currentEmailToken = Str::random(60);
 
             // Create email change request
             $emailChange = EmailChange::create([
-                'user_id' => $user->id,
-                'new_email' => Crypt::encryptString($validatedData['email']),
+                'user_id' => $userAuth->id,
+                'new_email' => Crypt::encryptString($request->email),
                 'current_email_verification_token' => $currentEmailToken,
             ]);
 
             // Send verification email to the current email
-            Mail::to(Crypt::decryptString($user->email))->send(new CurrentEmailChangeNotificationEmail($user, $currentEmailToken));
+            Mail::to(Crypt::decryptString($userAuth->email))->send(new CurrentEmailChangeNotificationEmail($userAuth, $currentEmailToken));
 
             return redirect()->route('profile.index')->with('success', __('messages.verify_current_email'));
         }
 
         // Update password if requested
         if ($request->input('change_password_hidden') === '1') {
-            if (Hash::check($request->current_password, $user->password)) {
-                $user->password = Hash::make($request->new_password);
+            if (Hash::check($request->current_password, $userAuth->password)) {
+                $userAuth->password = Hash::make($request->new_password);
             } else {
                 return redirect()->back()->withErrors(['current_password' => __('messages.current_password_incorrect')])->withInput();
             }
         }
 
-        $user->save();
+        $userAuth->save();
 
         return redirect()->route('profile.index')->with('success', __('messages.profile_updated'))->withInput();
     }
