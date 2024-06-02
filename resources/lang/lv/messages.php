@@ -158,5 +158,16 @@ return [
     'left_team_successfully' => 'Jūs veiksmīgi pametāt komandu.',
     'no_permission' => 'Jums nav atļaujas veikt šo darbību.',
     'team_dissolved_successfully' => 'Komanda tika veiksmīgi izformēta.',
-
+    'user_role_updated' => 'Lietotāja loma veiksmīgi atjaunināta.',
+    'ticket_created' => 'Tiket veiksmīgi izveidots',
+    'task_added' => 'Uzdevums veiksmīgi pievienots',
+    'comment_added' => 'Komentārs veiksmīgi pievienots',
+    'comment_updated' => 'Komentārs veiksmīgi atjaunināts',
+    'comment_deleted' => 'Komentārs veiksmīgi dzēsts',
+    'unauthorized_update_comment' => 'Jums nav atļauts atjaunināt šo komentāru',
+    'unauthorized_delete_comment' => 'Jums nav atļauts dzēst šo komentāru',
+    'ticket_deleted' => 'Tiket veiksmīgi dzēsts',
+    'unauthorized_delete_ticket' => 'Jums nav atļauts dzēst šo tiketu',
+    'ticket_updated' => 'Tiket veiksmīgi atjaunināts',
+    'unauthorized_update_ticket' => 'Jums nav atļauts atjaunināt šo tiketu',
 ];
