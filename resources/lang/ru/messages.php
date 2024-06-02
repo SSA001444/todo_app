@@ -102,6 +102,8 @@ return [
     'success' => 'Успешно!',
     'error' => 'Ошибка!',
     'confirm_password' => 'Подтвердите пароль',
+    'dissolve_team' => 'Распустить команду',
+    'leave_team' => 'Покинуть команду',
 
     //System messages
     'invalid_credentials' => 'Неверные учетные данные. Пожалуйста, попробуйте снова.',
@@ -161,4 +163,10 @@ return [
     'email_verification' => 'Пожалуйста, подтвердите email.',
     'email_already_taken' => 'Электронная почта уже используется.',
     'username_already_taken' => 'Имя пользователя уже используется.',
+    'confirm_leave_team' => 'Вы уверены, что хотите покинуть команду?',
+    'confirm_dissolve_team' => 'Вы уверены, что хотите распустить команду?',
+    'admin_cannot_leave' => 'Администратор не может покинуть команду.',
+    'left_team_successfully' => 'Вы успешно покинули команду.',
+    'no_permission' => 'У вас нет разрешения на выполнение этого действия.',
+    'team_dissolved_successfully' => 'Команда была успешно распущена.',
 ];

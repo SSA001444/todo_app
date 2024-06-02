@@ -102,6 +102,8 @@ return [
     'success' => 'Success!',
     'error' => 'Error!',
     'confirm_password' => 'Confirm Password',
+    'dissolve_team' => 'Dissolve Team',
+    'leave_team' => 'Leave Team',
 
     //System messages
     'invalid_credentials' => 'Invalid credentials. Please try again.',
@@ -150,4 +152,10 @@ return [
     'email_verification' => 'Please verify your email address.',
     'email_already_taken' => 'Email is already taken.',
     'username_already_taken' => 'Username is already taken.',
+    'confirm_leave_team' => 'Are you sure you want to leave the team?',
+    'confirm_dissolve_team' => 'Are you sure you want to dissolve the team?',
+    'admin_cannot_leave' => 'Admin cannot leave the team.',
+    'left_team_successfully' => 'You have left the team successfully.',
+    'no_permission' => 'You do not have permission to perform this action.',
+    'team_dissolved_successfully' => 'The team has been dissolved successfully.',
 ];

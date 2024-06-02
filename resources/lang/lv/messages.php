@@ -102,6 +102,8 @@ return [
     'success' => 'Veiksmīgi!',
     'error' => 'Kļūda!',
     'confirm_password' => 'Apstipriniet paroli',
+    'dissolve_team' => 'Izformēt komandu',
+    'leave_team' => 'Pamest komandu',
 
     //System messages
     'invalid_credentials' => 'Nederīgi dati. Lūdzu, mēģiniet vēlreiz.',
@@ -150,4 +152,11 @@ return [
     'email_verification' => 'Lūdzu, pārbaudiet savu e-pasta adresi.',
     'email_already_taken' => 'E-pasts jau tiek izmantots.',
     'username_already_taken' => 'Lietotājvārds jau tiek izmantots.',
+    'confirm_leave_team' => 'Vai esat pārliecināts, ka vēlaties pamest komandu?',
+    'confirm_dissolve_team' => 'Vai esat pārliecināts, ka vēlaties izformēt komandu?',
+    'admin_cannot_leave' => 'Administrators nevar pamest komandu.',
+    'left_team_successfully' => 'Jūs veiksmīgi pametāt komandu.',
+    'no_permission' => 'Jums nav atļaujas veikt šo darbību.',
+    'team_dissolved_successfully' => 'Komanda tika veiksmīgi izformēta.',
+
 ];

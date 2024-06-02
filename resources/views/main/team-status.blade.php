@@ -59,6 +59,14 @@
                     </div>
                 </div>
             </div>
+
+            <div class="team-actions">
+                @if (Auth::user()->role === 'admin')
+                    <button id="dissolveTeamBtn" class="create-team-btn">{{ __('messages.dissolve_team') }}</button>
+                @else
+                    <button id="leaveTeamBtn" class="create-team-btn">{{ __('messages.leave_team') }}</button>
+                @endif
+            </div>
         </section>
     @else
         <div class="no-team-container">
@@ -98,6 +106,18 @@
             $(window).on('click', function(event) {
                 if ($(event.target).is(modal)) {
                     modal.hide();
+                }
+            });
+
+            $('#leaveTeamBtn').on('click', function() {
+                if (confirm("{{ __('messages.confirm_leave_team') }}")) {
+                    window.location.href = "{{ route('teams.leave') }}";
+                }
+            });
+
+            $('#dissolveTeamBtn').on('click', function() {
+                if (confirm("{{ __('messages.confirm_dissolve_team') }}")) {
+                    window.location.href = "{{ route('teams.dissolve') }}";
                 }
             });
         });

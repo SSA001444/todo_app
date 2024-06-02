@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(\App\Http\Controllers\TeamController::class)->group(function () {
         Route::post('/teams', 'store')->name('teams.store');
+        Route::get('/teams/leave', 'leave')->name('teams.leave');
+        Route::get('/teams/dissolve', 'dissolve')->name('teams.dissolve');
     });
 
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
