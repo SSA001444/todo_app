@@ -46,5 +46,35 @@ class TeamController extends Controller
 
         return redirect()->route('team-status')->with('success', __('messages.team_created_success'));
     }
+
+    public function leave()
+    {
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return redirect()->back()->withErrors(__('messages.admin_cannot_leave'));
+        }
+
+        $user->team_id = null;
+        $user->role = 'user';
+        $user->save();
+
+        return redirect()->route('team-status')->with('success', __('messages.left_team_successfully'));
+    }
+
+    public function dissolve()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'admin') {
+            return redirect()->back()->withErrors(__('messages.no_permission'));
+        }
+
+        $team = $user->team;
+        $team->users()->update(['team_id' => null, 'role' => 'user']);
+        $team->delete();
+
+        return redirect()->route('team-status')->with('success', __('messages.team_dissolved_successfully'));
+    }
 }
 
