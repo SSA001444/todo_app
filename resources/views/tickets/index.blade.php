@@ -36,7 +36,9 @@
                     <select id="filter-tag" name="tag" class="ticket-filter-select">
                         <option value="">{{ __('messages.all') }}</option>
                         @foreach($tags as $tag)
+                            @if($tag->team_id == Auth::user()->team_id)
                             <option value="{{ $tag->name }}">{{ $tag->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
