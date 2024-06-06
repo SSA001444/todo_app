@@ -32,6 +32,7 @@
                 </div>
                 @if(($ticket->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id)
                     <button id="editTicketBtn" class="btn btn-primary">{{ __('messages.edit_ticket') }}</button>
+                    <button id="toggleStatusBtn" class="btn btn-secondary">{{ $ticket->status == 'open' ? __('messages.close_ticket') : __('messages.open_ticket') }}</button>
                 @endif
             </div>
 
@@ -59,7 +60,7 @@
                                 <img src="{{ asset($comment->photo) }}" alt="Comment Photo" class="comment-photo">
                             @endif
                             <div class="comment-actions">
-                                @if(($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id )
+                                @if((($comment->user_id == Auth::id() || Auth::user()->role == 'moderator' || Auth::user()->role == 'admin') && $ticket->team_id == Auth::user()->team_id) && $ticket->status == 'open' )
                                     <button class="edit-comment-btn" data-id="{{ $comment->id }}">{{ __('messages.edit') }}</button>
                                     <button class="delete-comment-btn" data-id="{{ $comment->id }}">{{ __('messages.delete') }}</button>
                                 @endif
@@ -70,6 +71,7 @@
                     </div>
                 @endforeach
 
+                @if($ticket->status === 'open')
                 <form action="{{ route('comments.store') }}" method="POST" enctype="multipart/form-data" class="comment-form">
                     @csrf
                     <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
@@ -77,6 +79,7 @@
                     <input type="file" name="photo" accept="image/*" class="comment-photo-input">
                     <button type="submit" class="btn btn-primary">{{ __('messages.add_comment') }}</button>
                 </form>
+                @endif
             </div>
         </div>
         <!-- Edit Ticket Modal -->
@@ -147,6 +150,8 @@
             var editTicketModal = $('#editTicketModal');
             var editTicketBtn = $('#editTicketBtn');
             var closeEditTicketSpan = $('#close_edit_ticket');
+            var toggleStatusBtn = $('#toggleStatusBtn');
+            var addCommentForm = $('.comment-form');
 
             taskBtn.on('click', function() {
                 taskModal.show();
@@ -214,6 +219,10 @@
                 }
             });
 
+            function setTaskCheckboxesStatus(disabled) {
+                $('.tasks-container input[type="checkbox"]').prop('disabled', disabled);
+            }
+
             $('.tasks-container input[type="checkbox"]').on('change', function() {
                 var taskId = $(this).attr('id').split('-')[1];
                 var completed = $(this).is(':checked') ? 1 : 0;
@@ -233,6 +242,50 @@
                     }
                 });
             });
+
+            function toggleCommentActions(show) {
+                if (show) {
+                    $('.edit-comment-btn, .delete-comment-btn').show();
+                    addCommentForm.show();
+                    taskBtn.show();
+                } else {
+                    $('.edit-comment-btn, .delete-comment-btn').hide();
+                    addCommentForm.hide();
+                    taskBtn.hide();
+                }
+            }
+
+            toggleStatusBtn.on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/tickets/' + {{ $ticket->id }} + '/toggle-status',
+                    type: 'PATCH',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const newStatus = response.status;
+                            $('.ticket-status')
+                                .text(newStatus.charAt(0).toUpperCase() + newStatus.slice(1))
+                                .removeClass('open closed')
+                                .addClass(newStatus);
+                            $('#toggleStatusBtn').text(newStatus === 'open' ? '{{ __('messages.close_ticket') }}' : '{{ __('messages.open_ticket') }}');
+                            setTaskCheckboxesStatus(newStatus === 'closed');
+                            toggleCommentActions(newStatus === 'open');
+                            location.reload();
+                        }
+                    },
+                    error: function(response) {
+                        console.log('Error toggling ticket status');
+                        if (response.responseJSON && response.responseJSON.errors) {
+                            console.log(response.responseJSON.errors);
+                        }
+                    }
+                });
+            });
+            setTaskCheckboxesStatus('{{ $ticket->status }}' === 'closed');
+            toggleCommentActions('{{ $ticket->status }}' === 'open');
         });
     </script>
 

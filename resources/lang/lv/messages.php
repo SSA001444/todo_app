@@ -104,6 +104,8 @@ return [
     'confirm_password' => 'Apstipriniet paroli',
     'dissolve_team' => 'Izformēt komandu',
     'leave_team' => 'Pamest komandu',
+    'close_ticket' => 'Aizvērt biļeti',
+    'open_ticket' => 'Atvērt biļeti',
 
     //System messages
     'invalid_credentials' => 'Nederīgi dati. Lūdzu, mēģiniet vēlreiz.',
@@ -170,4 +172,6 @@ return [
     'unauthorized_delete_ticket' => 'Jums nav atļauts dzēst šo tiketu',
     'ticket_updated' => 'Tiket veiksmīgi atjaunināts',
     'unauthorized_update_ticket' => 'Jums nav atļauts atjaunināt šo tiketu',
+    'ticket_status_updated' => 'Biļetes statuss atjaunināts',
+    'not_authorized' => 'Jums nav atļaujas veikt šo darbību',
 ];
