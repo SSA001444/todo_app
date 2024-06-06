@@ -104,6 +104,8 @@ return [
     'confirm_password' => 'Подтвердите пароль',
     'dissolve_team' => 'Распустить команду',
     'leave_team' => 'Покинуть команду',
+    'close_ticket' => 'Закрыть тикет',
+    'open_ticket' => 'Открыть тикет',
 
     //System messages
     'invalid_credentials' => 'Неверные учетные данные. Пожалуйста, попробуйте снова.',
@@ -170,4 +172,6 @@ return [
     'no_permission' => 'У вас нет разрешения на выполнение этого действия.',
     'team_dissolved_successfully' => 'Команда была успешно распущена.',
     'user_role_updated' => 'Роль пользователя успешно обновлена.',
+    'ticket_status_updated' => 'Статус тикета успешно обновлен.',
+    'not_authorized' => 'У вас нет прав для выполнения этого действия.',
 ];

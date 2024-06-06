@@ -104,7 +104,8 @@ return [
     'confirm_password' => 'Confirm Password',
     'dissolve_team' => 'Dissolve Team',
     'leave_team' => 'Leave Team',
-
+    'close_ticket' => 'Close Ticket',
+    'open_ticket' => 'Open Ticket',
 
     //System messages
     'invalid_credentials' => 'Invalid credentials. Please try again.',
@@ -171,5 +172,6 @@ return [
     'unauthorized_delete_ticket' => 'You are not authorized to delete this ticket',
     'ticket_updated' => 'Ticket updated successfully',
     'unauthorized_update_ticket' => 'You are not authorized to update this ticket',
-
+    'not_authorized' => 'You are not authorized to perform this action.',
+    'ticket_status_updated' => 'Ticket status updated successfully.',
 ];

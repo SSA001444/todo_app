@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
             Route::patch('/tasks/{task}', 'updateTask')->name('tasks.update');
             Route::patch('/tickets/{id}', 'update')->name('tickets.update');
             Route::delete('/tickets/{id}', 'destroy')->name('tickets.destroy');
+            Route::patch('/tickets/{ticket}/toggle-status', 'toggleStatus')->name('tickets.toggle-status');
         });
 
         Route::controller(\App\Http\Controllers\TagController::class)->group(function () {

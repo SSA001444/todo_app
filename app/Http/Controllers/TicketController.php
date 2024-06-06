@@ -202,4 +202,25 @@ class TicketController extends Controller
         }
         return back()->with('error', __('messages.unauthorized_update_ticket'));
     }
+
+    public function toggleStatus($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        if ((Auth::user()->role == 'admin' || Auth::user()->role == 'moderator' || Auth::id() == $ticket->user_id) && $ticket->team_id == Auth::user()->team_id) {
+            $ticket->status = $ticket->status == 'open' ? 'closed' : 'open';
+            $ticket->save();
+
+            session()->flash('success', __('messages.ticket_status_updated'));
+
+            return response()->json([
+                'success' => true,
+                'status' => $ticket->status,
+            ]);
+        }
+
+        session()->flash('error', __('messages.not_authorized'));
+
+        return response()->json(['success' => false], 403);
+    }
 }
