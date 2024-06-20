@@ -144,6 +144,7 @@ return [
     'cannot_remove_self' => 'Jūs nevarat noņemt sevi.',
     'message_deleted' => 'Ziņa veiksmīgi izdzēsta.',
     'message_edited' => 'Ziņa veiksmīgi rediģēta.',
+    'save_changes' => 'Sagatlabāt izmaiņas',
     'unauthorized_delete_message' => 'Jūs varat dzēst tikai savas ziņas.',
     'unauthorized_edit_message' => 'Jūs varat rediģēt tikai savas ziņas.',
     'unauthorized_chat' => 'Jūs nevarat redzēt šo čatu.',

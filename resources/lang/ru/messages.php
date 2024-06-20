@@ -155,6 +155,7 @@ return [
     'unauthorized_update_ticket' => 'Вам не разрешено обновлять этот тикет',
     'message_deleted' => 'Сообщение успешно удалено.',
     'message_edited' => 'Сообщение успешно отредактировано.',
+    'save_changes' => 'Сохранить изменения',
     'unauthorized_delete_message' => 'Вы можете удалять только свои сообщения.',
     'unauthorized_edit_message' => 'Вы можете редактировать только свои сообщения.',
     'unauthorized_chat' => 'Вы не можете видеть этот чат.',

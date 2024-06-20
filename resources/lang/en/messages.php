@@ -144,6 +144,7 @@ return [
     'cannot_remove_self' => 'You cannot remove yourself.',
     'message_deleted' => 'Message deleted successfully.',
     'message_edited' => 'Message edited successfully.',
+    'save_changes' => 'Save changes',
     'unauthorized_delete_message' => 'You can only delete your own messages.',
     'unauthorized_edit_message' => 'You can only edit your own messages.',
     'unauthorized_chat' => 'You cant see this chat.',
