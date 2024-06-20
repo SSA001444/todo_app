@@ -190,7 +190,7 @@
 
             $('.edit-comment-btn').on('click', function() {
                 const commentId = $(this).data('id');
-                const commentText = $(this).closest('.comment-text').find('div').text();
+                const commentText = $(this).closest('.comment-block').find('.comment-text').not('.trashed').text();
                 $('#edit-comment-text').val(commentText);
                 $('#editCommentForm').attr('action', `/tickets/comments/${commentId}`);
                 editModal.show();
